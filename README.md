@@ -4,7 +4,6 @@ LibreWO is a comprehensive work order management system designed for computer re
 
 ## Features
 
-### Core Features
 - **User Management**: Three user levels (Admin, Technician, Limited) with role-based permissions
 - **Work Order Management**: Complete work order lifecycle from creation to completion
 - **Customer Management**: Customer database with search and merge capabilities
@@ -12,24 +11,8 @@ LibreWO is a comprehensive work order management system designed for computer re
 - **Comprehensive Logging**: Detailed activity logs for all system actions
 - **Print-Ready Work Orders**: Professional work order printouts with company branding
 
-### Security Features
-- Prepared statements for SQL injection prevention
-- CSRF protection on all forms
-- Session security with timeout handling
-- IP-based login tracking
-- Brute force protection with login attempt limits
-- Cloudflare support for real IP detection
-
-### Technical Features
-- **MVC Architecture**: Clean, maintainable code structure
-- **Responsive Design**: Mobile-friendly interface using Tailwind CSS
-- **Pretty URLs**: SEO-friendly URLs with .htaccess routing
-- **Email Integration**: PHPMailer support for notifications
-- **Database Migrations**: Automated installation system
-
 ## Requirements
 
-### System Requirements
 - **PHP 8.4 or higher** (Required)
 - **Apache or LiteSpeed web server** (Recommended for .htaccess support)
 - **MySQL 5.7 or higher / MariaDB 10.2 or higher**
@@ -38,10 +21,6 @@ LibreWO is a comprehensive work order management system designed for computer re
   - OpenSSL (Required for security features)
 - **File Permissions:** Write access to logs/ directory
 - **URL Rewriting:** mod_rewrite (Apache) or equivalent
-
-### Additional Requirements
-- PHPMailer (place in vendors/ folder)
-- Web server with .htaccess support for pretty URLs
 
 ## Installation
 
@@ -58,16 +37,6 @@ LibreWO is a comprehensive work order management system designed for computer re
 3. **Configure Settings**
    - Update `config.php` with your database and email settings
    - Set your `BASE_URL` to match your installation path
-
-4. **Place PHPMailer**
-   - Download PHPMailer and extract to `vendors/phpmailer/`
-   - The structure should be `vendors/phpmailer/src/PHPMailer.php`
-
-5. **Set Permissions**
-   ```bash
-   chmod 755 logs/
-   chmod 644 config.php
-   ```
 
 6. **Access Installation**
    - Navigate to your LibreWO URL in a web browser
@@ -88,17 +57,17 @@ define('DB_PASS', 'your_password');
 ### Email Configuration
 Configure SMTP settings for email notifications:
 ```php
-define('SMTP_HOST', 'smtp.gmail.com');
+define('SMTP_HOST', 'smtp.example.com');
 define('SMTP_PORT', 587);
 define('SMTP_SECURE', 'tls');
-define('SMTP_USER', 'your-email@gmail.com');
-define('SMTP_PASS', 'your-password');
+define('SMTP_USER', 'noreply@example.com');
+define('SMTP_PASS', 'password');
 ```
 
 ### Base URL Configuration
 Set your application's base URL:
 ```php
-define('BASE_URL', 'http://yoursite.com/librewo');
+define('BASE_URL', 'https://example.com');
 ```
 
 ## User Roles
@@ -139,53 +108,6 @@ define('BASE_URL', 'http://yoursite.com/librewo');
    - Customer signature line
    - Customizable disclaimer
 
-## Security Features
-
-### Two-Factor Authentication
-- Triggered when logging in from a new IP address
-- 4-digit code sent via email
-- Codes expire after 15 minutes
-
-### Login Protection
-- Maximum 5 login attempts per IP per 15 minutes
-- All login attempts are logged
-- Session timeout after 1 hour of inactivity
-
-### Data Protection
-- All forms protected with CSRF tokens
-- User input sanitized and validated
-- Database queries use prepared statements
-- Sensitive files protected via .htaccess
-
-## File Structure
-
-```
-librewo/
-├── config.php              # Configuration file
-├── index.php               # Main entry point
-├── version.php             # Version information
-├── .htaccess               # URL rewriting and security
-├── core/                   # Core framework files
-│   ├── Controller.php
-│   ├── Database.php
-│   ├── Logger.php
-│   ├── Model.php
-│   └── Router.php
-├── controllers/            # Application controllers
-├── models/                 # Data models
-├── views/                  # View templates
-├── database/              # Database schema
-├── logs/                  # System logs
-└── vendors/               # Third-party libraries
-    └── phpmailer/         # PHPMailer library
-```
-
-## API Endpoints
-
-LibreWO includes AJAX endpoints for dynamic functionality:
-
-- `GET /api/search-customers?q=query` - Search customers
-- `POST /api/work-order-status` - Update work order status
 
 ## Customization
 
@@ -198,7 +120,6 @@ Administrators can customize:
 ### CAPTCHA Integration
 Support for:
 - No CAPTCHA (default)
-- Google reCAPTCHA
 - Cloudflare Turnstile
 
 ## Logging
@@ -226,15 +147,3 @@ The system automatically cleans up:
 ## Support
 
 For support and documentation, visit: https://librewo.com
-
-## License
-
-LibreWO is open-source software. Please check the LICENSE file for details.
-
-## Version
-
-Current version: 1.0.0 (beta)
-
----
-
-**Powered by LibreWO** - Professional work order management for computer repair shops.
