@@ -31,12 +31,12 @@ LibreWO is a comprehensive work order management system designed for computer re
    ```
 
 2. **Configure Database**
-   - Create a MySQL database named `librewo`
-   - Update database credentials in `config.php`
+   - Create a MySQL database and user with adequate permissions
+   - Update database information in `config.php`
 
 3. **Configure Settings**
-   - Update `config.php` with your database and email settings
-   - Set your `BASE_URL` to match your installation path
+   - Update `config.php` with your email settings
+   - Set your `BASE_URL` to match your installation path like https://example.com with no trailing slash
 
 6. **Access Installation**
    - Navigate to your LibreWO URL in a web browser
