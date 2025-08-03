@@ -33,7 +33,13 @@ $hideNavigation = true;
 
         <!-- Company Header -->
         <div class="text-center mb-8 print-avoid-break">
-            <h1 class="text-2xl font-bold text-gray-900"><?= htmlspecialchars($companyInfo['company_name'] ?? $companyName ?? 'LibreWO') ?></h1>
+            <?php if (!empty($companyLogoUrl)): ?>
+                <div class="flex justify-center mb-4">
+                    <img src="<?= htmlspecialchars($companyLogoUrl) ?>" alt="<?= htmlspecialchars($companyInfo['company_name'] ?? $companyName ?? 'LibreWO') ?>" class="h-16 w-auto">
+                </div>
+            <?php else: ?>
+                <h1 class="text-2xl font-bold text-gray-900"><?= htmlspecialchars($companyInfo['company_name'] ?? $companyName ?? 'LibreWO') ?></h1>
+            <?php endif; ?>
             <?php if (!empty($companyInfo['company_address'])): ?>
                 <p class="text-gray-600 mt-1"><?= nl2br(htmlspecialchars($companyInfo['company_address'])) ?></p>
             <?php endif; ?>

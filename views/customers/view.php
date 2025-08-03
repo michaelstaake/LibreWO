@@ -3,7 +3,7 @@ $title = $customer['name'] . ' - Customers - ' . ($companyName ?? 'LibreWO');
 ob_start(); 
 ?>
 
-<div class="max-w-6xl mx-auto py-8">
+<div class="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
     <div class="mb-6">
         <div class="flex items-center justify-between">
             <div>

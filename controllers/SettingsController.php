@@ -25,16 +25,9 @@ class SettingsController extends Controller {
                         'company_address' => $this->sanitizeInput($_POST['company_address']),
                         'company_phone' => $this->sanitizeInput($_POST['company_phone']),
                         'company_email' => $this->sanitizeInput($_POST['company_email']),
+                        'company_logo_url' => $this->sanitizeInput($_POST['company_logo_url']),
                         'work_order_disclaimer' => $this->sanitizeInput($_POST['work_order_disclaimer'])
                     ];
-                    
-                    // Handle logo upload
-                    if (isset($_FILES['company_logo']) && $_FILES['company_logo']['error'] === UPLOAD_ERR_OK) {
-                        $logoPath = $this->handleLogoUpload($_FILES['company_logo']);
-                        if ($logoPath) {
-                            $companyData['company_logo'] = $logoPath;
-                        }
-                    }
                     
                     $this->settingsModel->updateCompanyInfo($companyData);
                     $this->logger->log('settings_updated', 'Company information updated', $_SESSION['user_id']);
@@ -74,33 +67,5 @@ class SettingsController extends Controller {
             'activeTab' => $activeTab,
             'csrf_token' => $this->generateCSRF()
         ]);
-    }
-    
-    private function handleLogoUpload($file) {
-        $uploadDir = 'uploads/';
-        if (!file_exists($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
-        
-        // Validate file type
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-        if (!in_array($file['type'], $allowedTypes)) {
-            throw new Exception('Invalid file type. Only JPEG, PNG, and GIF are allowed.');
-        }
-        
-        // Validate file size (max 2MB)
-        if ($file['size'] > 2 * 1024 * 1024) {
-            throw new Exception('File too large. Maximum size is 2MB.');
-        }
-        
-        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = 'logo_' . time() . '.' . $extension;
-        $targetPath = $uploadDir . $filename;
-        
-        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-            return $targetPath;
-        }
-        
-        throw new Exception('Failed to upload logo.');
     }
 }

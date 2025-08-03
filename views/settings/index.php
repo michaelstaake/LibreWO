@@ -3,7 +3,7 @@ $title = 'Settings - ' . ($companyName ?? 'LibreWO');
 ob_start(); 
 ?>
 
-<div class="max-w-4xl mx-auto py-8">
+<div class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
     <div class="mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Settings</h1>
         <p class="mt-1 text-sm text-gray-600">Configure your LibreWO installation</p>
@@ -54,6 +54,12 @@ ob_start();
                     <div>
                         <label for="company_name" class="block text-sm font-medium text-gray-700">Company Name</label>
                         <input type="text" id="company_name" name="company_name" value="<?= htmlspecialchars($settings['company_name'] ?? '') ?>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                    </div>
+
+                    <div>
+                        <label for="company_logo_url" class="block text-sm font-medium text-gray-700">Company Logo URL</label>
+                        <input type="url" id="company_logo_url" name="company_logo_url" value="<?= htmlspecialchars($settings['company_logo_url'] ?? '') ?>" placeholder="https://example.com/logo.png" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                        <p class="mt-1 text-sm text-gray-500">Enter the URL of your logo image</p>
                     </div>
 
                     <div>
