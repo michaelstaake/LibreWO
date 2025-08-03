@@ -9,15 +9,15 @@ define('DB_USER', 'root');
 define('DB_PASS', '');
 
 // Base URL Configuration - IMPORTANT: Update this to match your installation
-define('BASE_URL', 'http://localhost/librewo');
+define('BASE_URL', 'https://example.com');
 
 // Email Configuration for 2FA and notifications
-define('SMTP_HOST', 'smtp.gmail.com');
+define('SMTP_HOST', 'smtp.example.com');
 define('SMTP_PORT', 587);
 define('SMTP_SECURE', 'tls');
-define('SMTP_USER', 'your-email@gmail.com');
-define('SMTP_PASS', 'your-app-password'); // Use App Password for Gmail
-define('FROM_EMAIL', 'noreply@yourcompany.com');
+define('SMTP_USER', 'noreply@example.com');
+define('SMTP_PASS', 'password');
+define('FROM_EMAIL', 'noreply@example.com');
 define('FROM_NAME', 'LibreWO System');
 
 // Security Configuration
@@ -40,7 +40,7 @@ if (!file_exists(LOG_PATH)) {
 }
 
 // Timezone - Update to your local timezone
-date_default_timezone_set('America/New_York');
+date_default_timezone_set('America/Los_Angeles');
 
 // Error reporting - Set to 0 in production
 error_reporting(E_ALL);
