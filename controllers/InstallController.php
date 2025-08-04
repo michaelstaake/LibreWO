@@ -7,13 +7,8 @@ class InstallController extends Controller {
     
     public function __construct() {
         parent::__construct();
-        $this->userModel =             'url_rewrite' => [
-                'required' => 'URL Rewriting Support (recommended)',
-                'current' => $this->hasUrlRewriting() ? 'Available' : 'Not Available',
-                'status' => $this->hasUrlRewriting(),
-                'name' => 'URL Rewriting'
-            ]
-        ];    }
+        $this->userModel = new User();
+    }
     
     public function index() {
         // Check if database is already installed
@@ -98,14 +93,33 @@ class InstallController extends Controller {
         ]);
     }
     
+    // Override the parent view method to avoid loading settings during installation
+    protected function view($viewName, $data = []) {
+        // During installation, use default company name and no logo
+        $data['companyName'] = 'LibreWO';
+        $data['companyLogoUrl'] = '';
+        
+        extract($data);
+        $viewFile = 'views/' . $viewName . '.php';
+        
+        if (file_exists($viewFile)) {
+            require_once $viewFile;
+        } else {
+            http_response_code(404);
+            require_once 'views/errors/404.php';
+        }
+    }
+    
     private function createTables() {
         $sql = [
             "CREATE TABLE IF NOT EXISTS users (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 username VARCHAR(50) UNIQUE NOT NULL,
+                name VARCHAR(100) NULL,
                 email VARCHAR(100) UNIQUE NOT NULL,
                 password VARCHAR(255) NOT NULL,
                 user_group ENUM('Admin', 'Technician', 'Limited') NOT NULL DEFAULT 'Limited',
+                is_active TINYINT(1) NOT NULL DEFAULT 1,
                 reset_token VARCHAR(255) NULL,
                 reset_expires DATETIME NULL,
                 created_at DATETIME NOT NULL,
@@ -260,12 +274,6 @@ class InstallController extends Controller {
                 'current' => $this->hasUrlRewriting() ? 'Available' : 'Not Available',
                 'status' => $this->hasUrlRewriting(),
                 'name' => 'URL Rewriting'
-            ],
-            'file_permissions' => [
-                'required' => 'Write Permission to logs/ directory',
-                'current' => is_writable(LOG_PATH) ? 'Writable' : 'Not Writable',
-                'status' => is_writable(LOG_PATH),
-                'name' => 'File Permissions'
             ]
         ];
         
