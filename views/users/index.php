@@ -154,11 +154,36 @@ ob_start();
             </div>
             <div>
                 <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                    <a href="?page=<?= $i ?>" class="<?= $i === $currentPage ? 'bg-primary-50 border-primary-500 text-primary-600' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50' ?> relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                        <?= $i ?>
-                    </a>
-                    <?php endfor; ?>
+                    <?php 
+                    // Smart pagination: Show max 10 pages
+                    // If total pages <= 10, show all pages
+                    // If total pages > 10, show first 8, ellipsis, and last page
+                    
+                    if ($totalPages <= 10) {
+                        // Show all pages
+                        for ($i = 1; $i <= $totalPages; $i++): ?>
+                            <a href="?page=<?= $i ?>" class="<?= $i === $currentPage ? 'bg-primary-50 border-primary-500 text-primary-600' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50' ?> relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                <?= $i ?>
+                            </a>
+                        <?php endfor;
+                    } else {
+                        // Show first 8 pages
+                        for ($i = 1; $i <= 8; $i++): ?>
+                            <a href="?page=<?= $i ?>" class="<?= $i === $currentPage ? 'bg-primary-50 border-primary-500 text-primary-600' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50' ?> relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                <?= $i ?>
+                            </a>
+                        <?php endfor; ?>
+                        
+                        <!-- Ellipsis (disabled) -->
+                        <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-gray-100 text-sm font-medium text-gray-400 cursor-not-allowed">
+                            ...
+                        </span>
+                        
+                        <!-- Last page -->
+                        <a href="?page=<?= $totalPages ?>" class="<?= $totalPages === $currentPage ? 'bg-primary-50 border-primary-500 text-primary-600' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50' ?> relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                            <?= $totalPages ?>
+                        </a>
+                    <?php } ?>
                 </nav>
             </div>
         </div>

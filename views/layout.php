@@ -365,7 +365,7 @@
             <div class="max-w-7xl mx-auto px-4 py-6">
                 <div class="flex justify-between items-center">
                     <div class="text-gray-600">
-                        <span>Welcome, <?= htmlspecialchars(!empty($_SESSION['user_name']) ? $_SESSION['user_name'] : $_SESSION['username']) ?></span>
+                        <span><?= htmlspecialchars(!empty($_SESSION['user_name']) ? $_SESSION['user_name'] : $_SESSION['username']) ?></span>
                     </div>
                     <div class="text-gray-600">
                         <p>Powered by <a href="https://librewo.com" target="_blank" class="text-primary-600 hover:text-primary-700">LibreWO</a></p>

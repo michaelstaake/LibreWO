@@ -95,10 +95,10 @@ ob_start();
                             <dt class="text-sm font-medium text-gray-500">Date Opened</dt>
                             <dd class="mt-1 text-sm text-gray-900"><?= date('M j, Y g:i A', strtotime($workOrder['created_at'])) ?></dd>
                         </div>
-                        <?php if ($workOrder['status'] === 'Closed' && isset($workOrder['updated_at'])): ?>
+                        <?php if (($workOrder['status'] === 'Closed' || $workOrder['status'] === 'Picked Up') && !empty($workOrder['closed_at'])): ?>
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Date Closed</dt>
-                            <dd class="mt-1 text-sm text-gray-900"><?= date('M j, Y g:i A', strtotime($workOrder['updated_at'])) ?></dd>
+                            <dd class="mt-1 text-sm text-gray-900"><?= date('M j, Y g:i A', strtotime($workOrder['closed_at'])) ?></dd>
                         </div>
                         <?php endif; ?>
                         <div>
@@ -115,6 +115,32 @@ ob_start();
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Serial Number</dt>
                             <dd class="mt-1 text-sm text-gray-900"><?= htmlspecialchars($workOrder['serial_number']) ?></dd>
+                        </div>
+                        <?php endif; ?>
+                        <?php 
+                        // Check if there are actual accessories to display
+                        $hasAccessories = false;
+                        if (!empty($workOrder['accessories'])) {
+                            $accessories = json_decode($workOrder['accessories'], true);
+                            if (is_array($accessories) && !empty($accessories)) {
+                                // Filter out empty values
+                                $accessories = array_filter($accessories, function($item) {
+                                    return !empty(trim($item));
+                                });
+                                $hasAccessories = !empty($accessories);
+                            }
+                        }
+                        
+                        if ($hasAccessories): ?>
+                        <div class="sm:col-span-2">
+                            <dt class="text-sm font-medium text-gray-500">Accessories</dt>
+                            <dd class="mt-1 text-sm text-gray-900">
+                                <div class="flex flex-wrap gap-2">
+                                <?php foreach ($accessories as $accessory): ?>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800"><?= htmlspecialchars(trim($accessory)) ?></span>
+                                <?php endforeach; ?>
+                                </div>
+                            </dd>
                         </div>
                         <?php endif; ?>
                         <?php if ($workOrder['technician_display_name']): ?>
@@ -190,7 +216,7 @@ ob_start();
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-4">
                             <div>
                                 <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                                <select id="status" name="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                                <select id="status" name="status" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                                     <option value="Open" <?= $workOrder['status'] === 'Open' ? 'selected' : '' ?>>Open</option>
                                     <option value="In Progress" <?= $workOrder['status'] === 'In Progress' ? 'selected' : '' ?>>In Progress</option>
                                     <option value="Awaiting Parts" <?= $workOrder['status'] === 'Awaiting Parts' ? 'selected' : '' ?>>Awaiting Parts</option>
@@ -201,7 +227,7 @@ ob_start();
 
                             <div>
                                 <label for="priority" class="block text-sm font-medium text-gray-700">Priority</label>
-                                <select id="priority" name="priority" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                                <select id="priority" name="priority" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                                     <option value="Standard" <?= $workOrder['priority'] === 'Standard' ? 'selected' : '' ?>>Standard</option>
                                     <option value="Priority" <?= $workOrder['priority'] === 'Priority' ? 'selected' : '' ?>>Priority</option>
                                 </select>
@@ -209,7 +235,7 @@ ob_start();
 
                             <div>
                                 <label for="assigned_to" class="block text-sm font-medium text-gray-700">Assigned To</label>
-                                <select id="assigned_to" name="assigned_to" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                                <select id="assigned_to" name="assigned_to" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                                     <option value="">Unassigned</option>
                                     <?php foreach ($technicians as $tech): ?>
                                         <option value="<?= $tech['id'] ?>" <?= $workOrder['assigned_to'] == $tech['id'] ? 'selected' : '' ?>>
@@ -222,17 +248,17 @@ ob_start();
                         <div class="space-y-4">
                             <div>
                                 <label for="description" class="block text-sm font-medium text-gray-700">Work Order Description</label>
-                                <textarea id="description" name="description" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"><?= htmlspecialchars($workOrder['description']) ?></textarea>
+                                <textarea id="description" name="description" rows="3" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white"><?= htmlspecialchars($workOrder['description']) ?></textarea>
                             </div>
 
                             <div>
                                 <label for="resolution" class="block text-sm font-medium text-gray-700">Work Order Resolution</label>
-                                <textarea id="resolution" name="resolution" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"><?= htmlspecialchars($workOrder['resolution'] ?? '') ?></textarea>
+                                <textarea id="resolution" name="resolution" rows="3" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white"><?= htmlspecialchars($workOrder['resolution'] ?? '') ?></textarea>
                             </div>
 
                             <div>
                                 <label for="notes" class="block text-sm font-medium text-gray-700">Work Order Notes</label>
-                                <textarea id="notes" name="notes" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"><?= htmlspecialchars($workOrder['notes'] ?? '') ?></textarea>
+                                <textarea id="notes" name="notes" rows="3" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white"><?= htmlspecialchars($workOrder['notes'] ?? '') ?></textarea>
                             </div>
 
                             <div class="pt-4">

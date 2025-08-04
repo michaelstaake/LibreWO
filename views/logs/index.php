@@ -214,17 +214,39 @@ ob_start();
                             </a>
                         <?php endif; ?>
                         
-                        <?php
-                        $startPage = max(1, $currentPage - 2);
-                        $endPage = min($totalPages, $currentPage + 2);
+                        <?php 
+                        // Smart pagination: Show max 10 pages
+                        // If total pages <= 10, show all pages
+                        // If total pages > 10, show first 8, ellipsis, and last page
                         
-                        for ($i = $startPage; $i <= $endPage; $i++):
-                        ?>
-                            <a href="<?= BASE_URL ?>/logs?page=<?= $i ?><?= $search ? '&search=' . urlencode($search) : '' ?><?= $action ? '&action=' . urlencode($action) : '' ?><?= $userId ? '&user_id=' . urlencode($userId) : '' ?>" 
-                               class="relative inline-flex items-center px-4 py-2 border text-sm font-medium <?= $i === $currentPage ? 'z-10 bg-primary-50 border-primary-500 text-primary-600' : 'border-gray-300 bg-white text-gray-500 hover:bg-gray-50' ?>">
-                                <?= $i ?>
+                        if ($totalPages <= 10) {
+                            // Show all pages
+                            for ($i = 1; $i <= $totalPages; $i++): ?>
+                                <a href="<?= BASE_URL ?>/logs?page=<?= $i ?><?= $search ? '&search=' . urlencode($search) : '' ?><?= $action ? '&action=' . urlencode($action) : '' ?><?= $userId ? '&user_id=' . urlencode($userId) : '' ?>" 
+                                   class="relative inline-flex items-center px-4 py-2 border text-sm font-medium <?= $i === $currentPage ? 'z-10 bg-primary-50 border-primary-500 text-primary-600' : 'border-gray-300 bg-white text-gray-500 hover:bg-gray-50' ?>">
+                                    <?= $i ?>
+                                </a>
+                            <?php endfor;
+                        } else {
+                            // Show first 8 pages
+                            for ($i = 1; $i <= 8; $i++): ?>
+                                <a href="<?= BASE_URL ?>/logs?page=<?= $i ?><?= $search ? '&search=' . urlencode($search) : '' ?><?= $action ? '&action=' . urlencode($action) : '' ?><?= $userId ? '&user_id=' . urlencode($userId) : '' ?>" 
+                                   class="relative inline-flex items-center px-4 py-2 border text-sm font-medium <?= $i === $currentPage ? 'z-10 bg-primary-50 border-primary-500 text-primary-600' : 'border-gray-300 bg-white text-gray-500 hover:bg-gray-50' ?>">
+                                    <?= $i ?>
+                                </a>
+                            <?php endfor; ?>
+                            
+                            <!-- Ellipsis (disabled) -->
+                            <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-gray-100 text-sm font-medium text-gray-400 cursor-not-allowed">
+                                ...
+                            </span>
+                            
+                            <!-- Last page -->
+                            <a href="<?= BASE_URL ?>/logs?page=<?= $totalPages ?><?= $search ? '&search=' . urlencode($search) : '' ?><?= $action ? '&action=' . urlencode($action) : '' ?><?= $userId ? '&user_id=' . urlencode($userId) : '' ?>" 
+                               class="relative inline-flex items-center px-4 py-2 border text-sm font-medium <?= $totalPages === $currentPage ? 'z-10 bg-primary-50 border-primary-500 text-primary-600' : 'border-gray-300 bg-white text-gray-500 hover:bg-gray-50' ?>">
+                                <?= $totalPages ?>
                             </a>
-                        <?php endfor; ?>
+                        <?php } ?>
                         
                         <?php if ($currentPage < $totalPages): ?>
                             <a href="<?= BASE_URL ?>/logs?page=<?= $currentPage + 1 ?><?= $search ? '&search=' . urlencode($search) : '' ?><?= $action ? '&action=' . urlencode($action) : '' ?><?= $userId ? '&user_id=' . urlencode($userId) : '' ?>" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">

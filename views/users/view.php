@@ -238,8 +238,12 @@ ob_start();
                                 <?= htmlspecialchars($workOrder['customer_name']) ?>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900"><?= htmlspecialchars($workOrder['device_type']) ?></div>
-                                <div class="text-sm text-gray-500"><?= htmlspecialchars($workOrder['device_model']) ?></div>
+                                <div class="text-sm text-gray-900" title="<?= htmlspecialchars($workOrder['device_type']) ?>">
+                                    <?= htmlspecialchars(strlen($workOrder['device_type']) > 30 ? substr($workOrder['device_type'], 0, 30) . '...' : $workOrder['device_type']) ?>
+                                </div>
+                                <div class="text-sm text-gray-500" title="<?= htmlspecialchars($workOrder['device_model']) ?>">
+                                    <?= htmlspecialchars(strlen($workOrder['device_model']) > 30 ? substr($workOrder['device_model'], 0, 30) . '...' : $workOrder['device_model']) ?>
+                                </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center space-x-2">

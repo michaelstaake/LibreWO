@@ -144,8 +144,15 @@ ob_start();
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     <?= date('M j, Y', strtotime($workOrder['created_at'])) ?>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    <?= htmlspecialchars($workOrder['computer']) ?>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900" title="<?= htmlspecialchars($workOrder['computer']) ?>">
+                                        <?= htmlspecialchars(strlen($workOrder['computer']) > 30 ? substr($workOrder['computer'], 0, 30) . '...' : $workOrder['computer']) ?>
+                                    </div>
+                                    <?php if ($workOrder['model']): ?>
+                                        <div class="text-sm text-gray-500" title="<?= htmlspecialchars($workOrder['model']) ?>">
+                                            <?= htmlspecialchars(strlen($workOrder['model']) > 30 ? substr($workOrder['model'], 0, 30) . '...' : $workOrder['model']) ?>
+                                        </div>
+                                    <?php endif; ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     <?php if ($workOrder['technician_display_name']): ?>
@@ -209,13 +216,42 @@ ob_start();
                     </div>
                     <div>
                         <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-                            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                                <a href="<?= BASE_URL ?>/work-orders?page=<?= $i ?><?= $status !== 'All' ? '&status=' . urlencode($status) : '' ?><?= $search ? '&search=' . urlencode($search) : '' ?>" 
+                            <?php 
+                            // Smart pagination: Show max 10 pages
+                            // If total pages <= 10, show all pages
+                            // If total pages > 10, show first 8, ellipsis, and last page
+                            
+                            if ($totalPages <= 10) {
+                                // Show all pages
+                                for ($i = 1; $i <= $totalPages; $i++): ?>
+                                    <a href="<?= BASE_URL ?>/work-orders?page=<?= $i ?><?= $status !== 'All' ? '&status=' . urlencode($status) : '' ?><?= $search ? '&search=' . urlencode($search) : '' ?>" 
+                                       class="relative inline-flex items-center px-4 py-2 border text-sm font-medium 
+                                       <?= $i === $currentPage ? 'z-10 bg-primary-50 border-primary-500 text-primary-600' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50' ?>">
+                                        <?= $i ?>
+                                    </a>
+                                <?php endfor;
+                            } else {
+                                // Show first 8 pages
+                                for ($i = 1; $i <= 8; $i++): ?>
+                                    <a href="<?= BASE_URL ?>/work-orders?page=<?= $i ?><?= $status !== 'All' ? '&status=' . urlencode($status) : '' ?><?= $search ? '&search=' . urlencode($search) : '' ?>" 
+                                       class="relative inline-flex items-center px-4 py-2 border text-sm font-medium 
+                                       <?= $i === $currentPage ? 'z-10 bg-primary-50 border-primary-500 text-primary-600' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50' ?>">
+                                        <?= $i ?>
+                                    </a>
+                                <?php endfor; ?>
+                                
+                                <!-- Ellipsis (disabled) -->
+                                <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-gray-100 text-sm font-medium text-gray-400 cursor-not-allowed">
+                                    ...
+                                </span>
+                                
+                                <!-- Last page -->
+                                <a href="<?= BASE_URL ?>/work-orders?page=<?= $totalPages ?><?= $status !== 'All' ? '&status=' . urlencode($status) : '' ?><?= $search ? '&search=' . urlencode($search) : '' ?>" 
                                    class="relative inline-flex items-center px-4 py-2 border text-sm font-medium 
-                                   <?= $i === $currentPage ? 'z-10 bg-primary-50 border-primary-500 text-primary-600' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50' ?>">
-                                    <?= $i ?>
+                                   <?= $totalPages === $currentPage ? 'z-10 bg-primary-50 border-primary-500 text-primary-600' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50' ?>">
+                                    <?= $totalPages ?>
                                 </a>
-                            <?php endfor; ?>
+                            <?php } ?>
                         </nav>
                     </div>
                 </div>

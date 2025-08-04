@@ -58,11 +58,29 @@ ob_start();
                         <input type="hidden" name="customer_id" id="selected_customer_id">
                     </div>
 
-                    <div class="text-center text-gray-500 mb-6">OR</div>
+                    <!-- Selected Customer Display -->
+                    <div id="selected_customer_display" class="mb-6 hidden">
+                        <div class="bg-green-50 border border-green-200 rounded-md p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-lg font-medium text-green-900">Selected Customer</h3>
+                                    <div id="selected_customer_info" class="mt-2 text-sm text-green-700">
+                                        <!-- Customer info will be populated here -->
+                                    </div>
+                                </div>
+                                <button type="button" id="clear_customer_selection" class="ml-4 px-3 py-1 text-sm bg-white border border-green-300 rounded-md text-green-700 hover:bg-green-50">
+                                    Change Customer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
-                    <!-- New Customer Form -->
-                    <div class="space-y-4">
-                        <h3 class="text-lg font-medium text-gray-900">Add New Customer</h3>
+                    <div id="customer_selection_section">
+                        <div class="text-center text-gray-500 mb-6">OR</div>
+
+                        <!-- New Customer Form -->
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-medium text-gray-900">Add New Customer</h3>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
@@ -105,6 +123,7 @@ ob_start();
                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500">
                             </div>
                         </div>
+                    </div>
                     </div>
 
                     <div class="flex justify-end mt-6">
@@ -351,14 +370,78 @@ document.getElementById('customer_search')?.addEventListener('input', function()
         return;
     }
     
-    fetch(`<?= BASE_URL ?>/api/search-customers?q=${encodeURIComponent(query)}`)
-        .then(response => response.json())
-        .then(customers => {
-            if (customers.length === 0) {
+    // Check if this looks like a phone number search (more than 3 digits)
+    const digitCount = (query.match(/\d/g) || []).length;
+    let searchQueries = [query];
+    
+    if (digitCount > 3) {
+        // Generate multiple phone number format variations
+        const digitsOnly = query.replace(/\D/g, '');
+        
+        if (digitsOnly.length >= 10) {
+            // Generate common phone number formats
+            const phoneFormats = [];
+            
+            // Format: 5555555555
+            phoneFormats.push(digitsOnly);
+            
+            // Format: 555-555-5555
+            if (digitsOnly.length === 10) {
+                phoneFormats.push(`${digitsOnly.slice(0,3)}-${digitsOnly.slice(3,6)}-${digitsOnly.slice(6,10)}`);
+            } else if (digitsOnly.length === 11 && digitsOnly.startsWith('1')) {
+                phoneFormats.push(`${digitsOnly.slice(1,4)}-${digitsOnly.slice(4,7)}-${digitsOnly.slice(7,11)}`);
+                phoneFormats.push(`1-${digitsOnly.slice(1,4)}-${digitsOnly.slice(4,7)}-${digitsOnly.slice(7,11)}`);
+            }
+            
+            // Format: (555) 555-5555
+            if (digitsOnly.length === 10) {
+                phoneFormats.push(`(${digitsOnly.slice(0,3)}) ${digitsOnly.slice(3,6)}-${digitsOnly.slice(6,10)}`);
+            } else if (digitsOnly.length === 11 && digitsOnly.startsWith('1')) {
+                phoneFormats.push(`1 (${digitsOnly.slice(1,4)}) ${digitsOnly.slice(4,7)}-${digitsOnly.slice(7,11)}`);
+                phoneFormats.push(`(${digitsOnly.slice(1,4)}) ${digitsOnly.slice(4,7)}-${digitsOnly.slice(7,11)}`);
+            }
+            
+            // Format: 555.555.5555
+            if (digitsOnly.length === 10) {
+                phoneFormats.push(`${digitsOnly.slice(0,3)}.${digitsOnly.slice(3,6)}.${digitsOnly.slice(6,10)}`);
+            }
+            
+            searchQueries = phoneFormats;
+        } else if (digitsOnly.length >= 4) {
+            // For partial phone numbers, search for the digits
+            searchQueries = [digitsOnly, query];
+        }
+    }
+    
+    // Perform searches for all query variations
+    const searchPromises = searchQueries.map(searchQuery => 
+        fetch(`<?= BASE_URL ?>/api/search-customers?q=${encodeURIComponent(searchQuery)}`)
+            .then(response => response.json())
+    );
+    
+    Promise.all(searchPromises)
+        .then(resultsArrays => {
+            // Combine and deduplicate results
+            const combinedResults = [];
+            const seenIds = new Set();
+            
+            resultsArrays.forEach(customers => {
+                customers.forEach(customer => {
+                    if (!seenIds.has(customer.id)) {
+                        seenIds.add(customer.id);
+                        combinedResults.push(customer);
+                    }
+                });
+            });
+            
+            // Sort results by name
+            combinedResults.sort((a, b) => a.name.localeCompare(b.name));
+            
+            if (combinedResults.length === 0) {
                 resultsDiv.innerHTML = '<div class="p-2 text-gray-500">No customers found</div>';
             } else {
-                resultsDiv.innerHTML = customers.map(customer => 
-                    `<div class="p-2 hover:bg-gray-100 cursor-pointer customer-option" data-customer-id="${customer.id}">
+                resultsDiv.innerHTML = combinedResults.map(customer => 
+                    `<div class="p-2 hover:bg-gray-100 cursor-pointer customer-option" data-customer-id="${customer.id}" data-customer='${JSON.stringify(customer)}'>
                         <div class="font-medium">${customer.name}</div>
                         ${customer.company ? `<div class="text-sm text-gray-600">${customer.company}</div>` : ''}
                         <div class="text-sm text-gray-600">${customer.phone}</div>
@@ -368,16 +451,8 @@ document.getElementById('customer_search')?.addEventListener('input', function()
                 // Add click handlers
                 resultsDiv.querySelectorAll('.customer-option').forEach(option => {
                     option.addEventListener('click', function() {
-                        const customerId = this.dataset.customerId;
-                        document.getElementById('selected_customer_id').value = customerId;
-                        document.getElementById('customer_search').value = this.querySelector('.font-medium').textContent;
-                        resultsDiv.classList.add('hidden');
-                        
-                        // Clear new customer form
-                        document.getElementById('customer_name').value = '';
-                        document.getElementById('customer_phone').value = '';
-                        document.getElementById('customer_company').value = '';
-                        document.getElementById('customer_email').value = '';
+                        const customer = JSON.parse(this.dataset.customer);
+                        selectCustomer(customer);
                     });
                 });
             }
@@ -386,6 +461,88 @@ document.getElementById('customer_search')?.addEventListener('input', function()
         .catch(error => {
             console.error('Error searching customers:', error);
         });
+});
+
+// Function to select a customer
+function selectCustomer(customer) {
+    // Set the hidden field
+    document.getElementById('selected_customer_id').value = customer.id;
+    
+    // Update the selected customer display
+    const customerInfo = document.getElementById('selected_customer_info');
+    customerInfo.innerHTML = `
+        <div class="font-medium">${customer.name}</div>
+        ${customer.company ? `<div>${customer.company}</div>` : ''}
+        <div>${customer.phone}</div>
+        ${customer.email ? `<div>${customer.email}</div>` : ''}
+    `;
+    
+    // Show selected customer section and hide search/new customer sections
+    document.getElementById('selected_customer_display').classList.remove('hidden');
+    document.getElementById('customer_selection_section').classList.add('hidden');
+    document.getElementById('customer_results').classList.add('hidden');
+    
+    // Clear search input
+    document.getElementById('customer_search').value = '';
+    
+    // Clear new customer form and disable validation for hidden fields
+    clearNewCustomerForm();
+    disableNewCustomerValidation();
+}
+
+// Function to clear customer selection
+function clearCustomerSelection() {
+    // Clear hidden field
+    document.getElementById('selected_customer_id').value = '';
+    
+    // Hide selected customer section and show search/new customer sections
+    document.getElementById('selected_customer_display').classList.add('hidden');
+    document.getElementById('customer_selection_section').classList.remove('hidden');
+    
+    // Clear search input
+    document.getElementById('customer_search').value = '';
+    
+    // Clear new customer form and re-enable validation
+    clearNewCustomerForm();
+    enableNewCustomerValidation();
+}
+
+// Function to clear new customer form
+function clearNewCustomerForm() {
+    document.getElementById('customer_name').value = '';
+    document.getElementById('customer_phone').value = '';
+    document.getElementById('customer_company').value = '';
+    document.getElementById('customer_email').value = '';
+}
+
+// Function to disable validation for new customer fields when existing customer is selected
+function disableNewCustomerValidation() {
+    const phoneField = document.getElementById('customer_phone');
+    const nameField = document.getElementById('customer_name');
+    
+    if (phoneField) {
+        phoneField.setAttribute('data-no-auto-format', 'true');
+        phoneField.removeAttribute('required');
+    }
+    if (nameField) {
+        nameField.removeAttribute('required');
+    }
+}
+
+// Function to re-enable validation for new customer fields
+function enableNewCustomerValidation() {
+    const phoneField = document.getElementById('customer_phone');
+    const nameField = document.getElementById('customer_name');
+    
+    if (phoneField) {
+        phoneField.removeAttribute('data-no-auto-format');
+    }
+    // Note: We don't re-add 'required' attributes since the original form doesn't have them
+}
+
+// Add event listener for clear customer selection button
+document.getElementById('clear_customer_selection')?.addEventListener('click', function() {
+    clearCustomerSelection();
 });
 
 // Hide results when clicking outside

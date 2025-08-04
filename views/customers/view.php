@@ -95,32 +95,22 @@ ob_start();
                     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-700">Name *</label>
-                            <input type="text" id="name" name="name" value="<?= htmlspecialchars($customer['name']) ?>" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                            <input type="text" id="name" name="name" value="<?= htmlspecialchars($customer['name']) ?>" required class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                         </div>
 
                         <div>
                             <label for="company" class="block text-sm font-medium text-gray-700">Company</label>
-                            <input type="text" id="company" name="company" value="<?= htmlspecialchars($customer['company'] ?? '') ?>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                            <input type="text" id="company" name="company" value="<?= htmlspecialchars($customer['company'] ?? '') ?>" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                         </div>
 
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                            <input type="email" id="email" name="email" value="<?= htmlspecialchars($customer['email'] ?? '') ?>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                            <input type="email" id="email" name="email" value="<?= htmlspecialchars($customer['email'] ?? '') ?>" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                         </div>
 
                         <div>
                             <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
-                            <input type="tel" id="phone" name="phone" value="<?= htmlspecialchars($customer['phone'] ?? '') ?>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
-                        </div>
-
-                        <div class="sm:col-span-2">
-                            <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
-                            <textarea id="address" name="address" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"><?= htmlspecialchars($customer['address'] ?? '') ?></textarea>
-                        </div>
-
-                        <div class="sm:col-span-2">
-                            <label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
-                            <textarea id="notes" name="notes" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"><?= htmlspecialchars($customer['notes'] ?? '') ?></textarea>
+                            <input type="tel" id="phone" name="phone" value="<?= htmlspecialchars($customer['phone'] ?? '') ?>" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                         </div>
                     </div>
 
@@ -183,8 +173,12 @@ ob_start();
                                 </a>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900"><?= htmlspecialchars($workOrder['computer'] ?? 'N/A') ?></div>
-                                <div class="text-sm text-gray-500"><?= htmlspecialchars($workOrder['model'] ?? '') ?></div>
+                                <div class="text-sm text-gray-900" title="<?= htmlspecialchars($workOrder['computer'] ?? 'N/A') ?>">
+                                    <?= htmlspecialchars(strlen($workOrder['computer'] ?? '') > 30 ? substr($workOrder['computer'] ?? '', 0, 30) . '...' : ($workOrder['computer'] ?? 'N/A')) ?>
+                                </div>
+                                <div class="text-sm text-gray-500" title="<?= htmlspecialchars($workOrder['model'] ?? '') ?>">
+                                    <?= htmlspecialchars(strlen($workOrder['model'] ?? '') > 30 ? substr($workOrder['model'] ?? '', 0, 30) . '...' : ($workOrder['model'] ?? '')) ?>
+                                </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 <?php if (!empty($workOrder['assigned_to']) && !empty($workOrder['technician_name'])): ?>
