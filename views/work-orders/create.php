@@ -365,7 +365,7 @@ document.getElementById('customer_search')?.addEventListener('input', function()
     const query = this.value.trim();
     const resultsDiv = document.getElementById('customer_results');
     
-    if (query.length < 2) {
+    if (query.length === 0) {
         resultsDiv.classList.add('hidden');
         return;
     }

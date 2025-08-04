@@ -248,17 +248,17 @@ ob_start();
                         <div class="space-y-4">
                             <div>
                                 <label for="description" class="block text-sm font-medium text-gray-700">Work Order Description</label>
-                                <textarea id="description" name="description" rows="3" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white"><?= htmlspecialchars($workOrder['description']) ?></textarea>
+                                <textarea id="description" name="description" rows="5" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white"><?= htmlspecialchars($workOrder['description']) ?></textarea>
                             </div>
 
                             <div>
                                 <label for="resolution" class="block text-sm font-medium text-gray-700">Work Order Resolution</label>
-                                <textarea id="resolution" name="resolution" rows="3" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white"><?= htmlspecialchars($workOrder['resolution'] ?? '') ?></textarea>
+                                <textarea id="resolution" name="resolution" rows="5" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white"><?= htmlspecialchars($workOrder['resolution'] ?? '') ?></textarea>
                             </div>
 
                             <div>
                                 <label for="notes" class="block text-sm font-medium text-gray-700">Work Order Notes</label>
-                                <textarea id="notes" name="notes" rows="3" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white"><?= htmlspecialchars($workOrder['notes'] ?? '') ?></textarea>
+                                <textarea id="notes" name="notes" rows="5" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white"><?= htmlspecialchars($workOrder['notes'] ?? '') ?></textarea>
                             </div>
 
                             <div class="pt-4">
