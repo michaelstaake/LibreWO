@@ -187,9 +187,13 @@ ob_start();
                                 <div class="text-sm text-gray-500"><?= htmlspecialchars($workOrder['model'] ?? '') ?></div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <?php if ($workOrder['technician_display_name']): ?>
+                                <?php if (!empty($workOrder['assigned_to']) && !empty($workOrder['technician_name'])): ?>
                                     <a href="<?= BASE_URL ?>/users/view/<?= $workOrder['assigned_to'] ?>" class="text-primary-600 hover:text-primary-500">
-                                        <?= htmlspecialchars($workOrder['technician_display_name']) ?>
+                                        <?= htmlspecialchars($workOrder['technician_name']) ?>
+                                    </a>
+                                <?php elseif (!empty($workOrder['assigned_to']) && !empty($workOrder['technician_username'])): ?>
+                                    <a href="<?= BASE_URL ?>/users/view/<?= $workOrder['assigned_to'] ?>" class="text-primary-600 hover:text-primary-500">
+                                        <?= htmlspecialchars($workOrder['technician_username']) ?>
                                     </a>
                                 <?php else: ?>
                                     <span class="text-gray-400">Unassigned</span>
