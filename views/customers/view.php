@@ -168,6 +168,7 @@ ob_start();
                         <tr>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Device</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Technician</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
                             <th scope="col" class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
@@ -175,7 +176,7 @@ ob_start();
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         <?php foreach ($workOrders as $workOrder): ?>
-                        <tr class="<?= $workOrder['priority'] === 'Priority' ? 'bg-red-50 hover:bg-red-100' : 'hover:bg-gray-50' ?>">
+                        <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                 <a href="<?= BASE_URL ?>/work-orders/view/<?= $workOrder['id'] ?>" class="text-primary-600 hover:text-primary-500">
                                     #<?= $workOrder['id'] ?>
@@ -185,20 +186,36 @@ ob_start();
                                 <div class="text-sm text-gray-900"><?= htmlspecialchars($workOrder['computer'] ?? 'N/A') ?></div>
                                 <div class="text-sm text-gray-500"><?= htmlspecialchars($workOrder['model'] ?? '') ?></div>
                             </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <?php if ($workOrder['technician_display_name']): ?>
+                                    <a href="<?= BASE_URL ?>/users/view/<?= $workOrder['assigned_to'] ?>" class="text-primary-600 hover:text-primary-500">
+                                        <?= htmlspecialchars($workOrder['technician_display_name']) ?>
+                                    </a>
+                                <?php else: ?>
+                                    <span class="text-gray-400">Unassigned</span>
+                                <?php endif; ?>
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                    <?php 
-                                    switch($workOrder['status']) {
-                                        case 'Open': echo 'bg-orange-100 text-orange-800'; break;
-                                        case 'In Progress': echo 'bg-yellow-100 text-yellow-800'; break;
-                                        case 'Awaiting Parts': echo 'bg-purple-100 text-purple-800'; break;
-                                        case 'Closed': echo 'bg-green-100 text-green-800'; break;
-                                        case 'Picked Up': echo 'bg-gray-100 text-gray-800'; break;
-                                        default: echo 'bg-gray-100 text-gray-800';
-                                    }
-                                    ?>">
-                                    <?= htmlspecialchars($workOrder['status']) ?>
-                                </span>
+                                <div class="flex items-center space-x-2">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                        <?php 
+                                        switch($workOrder['status']) {
+                                            case 'Open': echo 'bg-orange-100 text-orange-800'; break;
+                                            case 'In Progress': echo 'bg-yellow-100 text-yellow-800'; break;
+                                            case 'Awaiting Parts': echo 'bg-purple-100 text-purple-800'; break;
+                                            case 'Closed': echo 'bg-green-100 text-green-800'; break;
+                                            case 'Picked Up': echo 'bg-gray-100 text-gray-800'; break;
+                                            default: echo 'bg-gray-100 text-gray-800';
+                                        }
+                                        ?>">
+                                        <?= htmlspecialchars($workOrder['status']) ?>
+                                    </span>
+                                    <?php if ($workOrder['priority'] === 'Priority'): ?>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                            Priority
+                                        </span>
+                                    <?php endif; ?>
+                                </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 <?= date('M j, Y', strtotime($workOrder['created_at'])) ?>

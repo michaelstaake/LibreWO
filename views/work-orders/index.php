@@ -121,7 +121,7 @@ ob_start();
                         </tr>
                     <?php else: ?>
                         <?php foreach ($workOrders as $workOrder): ?>
-                            <tr class="<?= $workOrder['priority'] === 'Priority' ? 'bg-red-50 hover:bg-red-100' : 'hover:bg-gray-50' ?>">
+                            <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">
                                         <a href="<?= BASE_URL ?>/work-orders/view/<?= $workOrder['id'] ?>" class="text-primary-600 hover:text-primary-500">
@@ -157,13 +157,20 @@ ob_start();
                                     <?php endif; ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                        <?= $workOrder['status'] === 'Open' ? 'bg-orange-100 text-orange-800' :
-                                            ($workOrder['status'] === 'In Progress' ? 'bg-yellow-100 text-yellow-800' :
-                                            ($workOrder['status'] === 'Awaiting Parts' ? 'bg-purple-100 text-purple-800' :
-                                            ($workOrder['status'] === 'Closed' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'))) ?>">
-                                        <?= htmlspecialchars($workOrder['status']) ?>
-                                    </span>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                            <?= $workOrder['status'] === 'Open' ? 'bg-orange-100 text-orange-800' :
+                                                ($workOrder['status'] === 'In Progress' ? 'bg-yellow-100 text-yellow-800' :
+                                                ($workOrder['status'] === 'Awaiting Parts' ? 'bg-purple-100 text-purple-800' :
+                                                ($workOrder['status'] === 'Closed' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'))) ?>">
+                                            <?= htmlspecialchars($workOrder['status']) ?>
+                                        </span>
+                                        <?php if ($workOrder['priority'] === 'Priority'): ?>
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                Priority
+                                            </span>
+                                        <?php endif; ?>
+                                    </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <a href="<?= BASE_URL ?>/work-orders/view/<?= $workOrder['id'] ?>" class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
