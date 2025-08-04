@@ -44,6 +44,7 @@ class Settings extends Model {
             'company_address' => $this->getSetting('company_address', ''),
             'company_phone' => $this->getSetting('company_phone', ''),
             'company_email' => $this->getSetting('company_email', ''),
+            'company_website' => $this->getSetting('company_website', ''),
             'company_logo' => $this->getSetting('company_logo', ''),
             'work_order_disclaimer' => $this->getSetting('work_order_disclaimer', 'Set up your Disclaimer on the Settings page')
         ];

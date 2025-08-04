@@ -74,7 +74,7 @@ ob_start();
 
                     <div>
                         <label for="company_website" class="block text-sm font-medium text-gray-700">Website</label>
-                        <input type="url" id="company_website" name="company_website" value="<?= htmlspecialchars($settings['company_website'] ?? '') ?>" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
+                        <input type="text" id="company_website" name="company_website" value="<?= htmlspecialchars($settings['company_website'] ?? '') ?>" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                     </div>
 
                     <div class="sm:col-span-2">

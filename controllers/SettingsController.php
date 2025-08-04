@@ -25,6 +25,7 @@ class SettingsController extends Controller {
                         'company_address' => $this->sanitizeInput($_POST['company_address']),
                         'company_phone' => $this->sanitizeInput($_POST['company_phone']),
                         'company_email' => $this->sanitizeInput($_POST['company_email']),
+                        'company_website' => $this->sanitizeInput($_POST['company_website']),
                         'company_logo_url' => $this->sanitizeInput($_POST['company_logo_url']),
                         'work_order_disclaimer' => $this->sanitizeInput($_POST['work_order_disclaimer'])
                     ];
