@@ -27,6 +27,7 @@ class HomeController extends Controller {
             'user' => [
                 'id' => $_SESSION['user_id'],
                 'username' => $_SESSION['username'],
+                'name' => $_SESSION['user_name'] ?? null,
                 'user_group' => $_SESSION['user_group']
             ]
         ]);

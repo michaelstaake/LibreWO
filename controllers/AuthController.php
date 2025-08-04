@@ -131,6 +131,7 @@ class AuthController extends Controller {
         
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
+        $_SESSION['user_name'] = $user['name'];
         $_SESSION['user_group'] = $user['user_group'];
         
         // Record login

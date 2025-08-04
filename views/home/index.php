@@ -6,7 +6,7 @@ ob_start();
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="py-6">
         <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p class="mt-2 text-gray-600">Welcome back, <?= htmlspecialchars($user['username']) ?>!</p>
+        <p class="mt-2 text-gray-600">Welcome back, <?= htmlspecialchars(!empty($user['name']) ? $user['name'] : $user['username']) ?>!</p>
     </div>
 
     <!-- Stats Grid -->
