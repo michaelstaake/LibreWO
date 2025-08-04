@@ -53,38 +53,38 @@ ob_start();
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                     <div>
                         <label for="company_name" class="block text-sm font-medium text-gray-700">Company Name</label>
-                        <input type="text" id="company_name" name="company_name" value="<?= htmlspecialchars($settings['company_name'] ?? '') ?>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                        <input type="text" id="company_name" name="company_name" value="<?= htmlspecialchars($settings['company_name'] ?? '') ?>" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                     </div>
 
                     <div>
                         <label for="company_logo_url" class="block text-sm font-medium text-gray-700">Company Logo URL</label>
-                        <input type="url" id="company_logo_url" name="company_logo_url" value="<?= htmlspecialchars($settings['company_logo_url'] ?? '') ?>" placeholder="https://example.com/logo.png" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                        <input type="url" id="company_logo_url" name="company_logo_url" value="<?= htmlspecialchars($settings['company_logo_url'] ?? '') ?>" placeholder="https://example.com/logo.png" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                         <p class="mt-1 text-sm text-gray-500">Enter the URL of your logo image</p>
                     </div>
 
                     <div>
                         <label for="company_phone" class="block text-sm font-medium text-gray-700">Phone</label>
-                        <input type="tel" id="company_phone" name="company_phone" value="<?= htmlspecialchars($settings['company_phone'] ?? '') ?>" data-no-auto-format class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                        <input type="tel" id="company_phone" name="company_phone" value="<?= htmlspecialchars($settings['company_phone'] ?? '') ?>" data-no-auto-format class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                     </div>
 
                     <div>
                         <label for="company_email" class="block text-sm font-medium text-gray-700">Email</label>
-                        <input type="email" id="company_email" name="company_email" value="<?= htmlspecialchars($settings['company_email'] ?? '') ?>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                        <input type="email" id="company_email" name="company_email" value="<?= htmlspecialchars($settings['company_email'] ?? '') ?>" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                     </div>
 
                     <div>
                         <label for="company_website" class="block text-sm font-medium text-gray-700">Website</label>
-                        <input type="url" id="company_website" name="company_website" value="<?= htmlspecialchars($settings['company_website'] ?? '') ?>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                        <input type="url" id="company_website" name="company_website" value="<?= htmlspecialchars($settings['company_website'] ?? '') ?>" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                     </div>
 
                     <div class="sm:col-span-2">
                         <label for="company_address" class="block text-sm font-medium text-gray-700">Address</label>
-                        <textarea id="company_address" name="company_address" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"><?= htmlspecialchars($settings['company_address'] ?? '') ?></textarea>
+                        <textarea id="company_address" name="company_address" rows="3" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white"><?= htmlspecialchars($settings['company_address'] ?? '') ?></textarea>
                     </div>
 
                     <div class="sm:col-span-2">
                         <label for="work_order_disclaimer" class="block text-sm font-medium text-gray-700">Work Order Disclaimer</label>
-                        <textarea id="work_order_disclaimer" name="work_order_disclaimer" rows="4" placeholder="Enter any legal disclaimers or terms that should appear on work orders..." class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"><?= htmlspecialchars($settings['work_order_disclaimer'] ?? '') ?></textarea>
+                        <textarea id="work_order_disclaimer" name="work_order_disclaimer" rows="4" placeholder="Enter any legal disclaimers or terms that should appear on work orders..." class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white"><?= htmlspecialchars($settings['work_order_disclaimer'] ?? '') ?></textarea>
                         <p class="mt-1 text-sm text-gray-500">This text will appear at the bottom of printed work orders</p>
                     </div>
                 </div>
@@ -120,19 +120,19 @@ ob_start();
 
                     <div>
                         <label for="session_timeout" class="block text-sm font-medium text-gray-700">Session Timeout (minutes)</label>
-                        <input type="number" id="session_timeout" name="session_timeout" value="<?= htmlspecialchars($settings['session_timeout'] ?? '60') ?>" min="5" max="1440" class="mt-1 block w-32 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                        <input type="number" id="session_timeout" name="session_timeout" value="<?= htmlspecialchars($settings['session_timeout'] ?? '60') ?>" min="5" max="1440" class="mt-1 block w-32 px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                         <p class="mt-1 text-sm text-gray-500">Users will be automatically logged out after this period of inactivity</p>
                     </div>
 
                     <div>
                         <label for="max_login_attempts" class="block text-sm font-medium text-gray-700">Maximum Login Attempts</label>
-                        <input type="number" id="max_login_attempts" name="max_login_attempts" value="<?= htmlspecialchars($settings['max_login_attempts'] ?? '5') ?>" min="3" max="10" class="mt-1 block w-32 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                        <input type="number" id="max_login_attempts" name="max_login_attempts" value="<?= htmlspecialchars($settings['max_login_attempts'] ?? '5') ?>" min="3" max="10" class="mt-1 block w-32 px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                         <p class="mt-1 text-sm text-gray-500">Number of failed login attempts before account lockout</p>
                     </div>
 
                     <div>
                         <label for="captcha_provider" class="block text-sm font-medium text-gray-700">CAPTCHA Protection</label>
-                        <select id="captcha_provider" name="captcha_provider" class="mt-1 block w-48 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm" onchange="toggleCaptchaFields()">
+                        <select id="captcha_provider" name="captcha_provider" class="mt-1 block w-48 px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white" onchange="toggleCaptchaFields()">
                             <option value="off" <?= ($settings['captcha_provider'] ?? 'off') === 'off' ? 'selected' : '' ?>>Disabled</option>
                             <option value="turnstile" <?= ($settings['captcha_provider'] ?? 'off') === 'turnstile' ? 'selected' : '' ?>>Cloudflare Turnstile</option>
                             <option value="recaptcha" <?= ($settings['captcha_provider'] ?? 'off') === 'recaptcha' ? 'selected' : '' ?>>Google reCAPTCHA v2</option>
@@ -144,12 +144,12 @@ ob_start();
                         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                             <div>
                                 <label for="turnstile_site_key" class="block text-sm font-medium text-gray-700">Turnstile Site Key</label>
-                                <input type="text" id="turnstile_site_key" name="turnstile_site_key" value="<?= htmlspecialchars($settings['turnstile_site_key'] ?? '') ?>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm" placeholder="0x4AAAAAAABkMYinukNB1Axe">
+                                <input type="text" id="turnstile_site_key" name="turnstile_site_key" value="<?= htmlspecialchars($settings['turnstile_site_key'] ?? '') ?>" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white" placeholder="0x4AAAAAAABkMYinukNB1Axe">
                                 <p class="mt-1 text-sm text-gray-500">Your Cloudflare Turnstile site key (public)</p>
                             </div>
                             <div>
                                 <label for="turnstile_secret_key" class="block text-sm font-medium text-gray-700">Turnstile Secret Key</label>
-                                <input type="password" id="turnstile_secret_key" name="turnstile_secret_key" value="<?= htmlspecialchars($settings['turnstile_secret_key'] ?? '') ?>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm" placeholder="0x4AAAAAAABkMYinukNB1AxK">
+                                <input type="password" id="turnstile_secret_key" name="turnstile_secret_key" value="<?= htmlspecialchars($settings['turnstile_secret_key'] ?? '') ?>" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white" placeholder="0x4AAAAAAABkMYinukNB1AxK">
                                 <p class="mt-1 text-sm text-gray-500">Your Cloudflare Turnstile secret key (private)</p>
                             </div>
                         </div>
@@ -168,12 +168,12 @@ ob_start();
                         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                             <div>
                                 <label for="recaptcha_site_key" class="block text-sm font-medium text-gray-700">reCAPTCHA Site Key</label>
-                                <input type="text" id="recaptcha_site_key" name="recaptcha_site_key" value="<?= htmlspecialchars($settings['recaptcha_site_key'] ?? '') ?>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm" placeholder="6LdRcP0oAAAAAH...">
+                                <input type="text" id="recaptcha_site_key" name="recaptcha_site_key" value="<?= htmlspecialchars($settings['recaptcha_site_key'] ?? '') ?>" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white" placeholder="6LdRcP0oAAAAAH...">
                                 <p class="mt-1 text-sm text-gray-500">Your Google reCAPTCHA site key (public)</p>
                             </div>
                             <div>
                                 <label for="recaptcha_secret_key" class="block text-sm font-medium text-gray-700">reCAPTCHA Secret Key</label>
-                                <input type="password" id="recaptcha_secret_key" name="recaptcha_secret_key" value="<?= htmlspecialchars($settings['recaptcha_secret_key'] ?? '') ?>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm" placeholder="6LdRcP0oAAAAAG...">
+                                <input type="password" id="recaptcha_secret_key" name="recaptcha_secret_key" value="<?= htmlspecialchars($settings['recaptcha_secret_key'] ?? '') ?>" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white" placeholder="6LdRcP0oAAAAAG...">
                                 <p class="mt-1 text-sm text-gray-500">Your Google reCAPTCHA secret key (private)</p>
                             </div>
                         </div>
@@ -210,7 +210,7 @@ ob_start();
                 <div class="space-y-6">
                     <div>
                         <label for="phone_number_format" class="block text-sm font-medium text-gray-700">Phone Number Format</label>
-                        <select id="phone_number_format" name="phone_number_format" class="mt-1 block w-64 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm" onchange="showPhoneFormatExample()">
+                        <select id="phone_number_format" name="phone_number_format" class="mt-1 block w-64 px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white" onchange="showPhoneFormatExample()">
                             <option value="default" <?= ($settings['phone_number_format'] ?? 'default') === 'default' ? 'selected' : '' ?>>Default (minimum 7 digits)</option>
                             <option value="usa_format_a" <?= ($settings['phone_number_format'] ?? 'default') === 'usa_format_a' ? 'selected' : '' ?>>USA Format A: (555) 555-5555</option>
                             <option value="usa_format_b" <?= ($settings['phone_number_format'] ?? 'default') === 'usa_format_b' ? 'selected' : '' ?>>USA Format B: 555-555-5555</option>

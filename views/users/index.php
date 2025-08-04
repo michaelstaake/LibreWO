@@ -201,28 +201,28 @@ ob_start();
                 
                 <div class="mb-4">
                     <label for="user_username" class="block text-sm font-medium text-gray-700">Username *</label>
-                    <input type="text" id="user_username" name="username" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                    <input type="text" id="user_username" name="username" required class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                 </div>
                 
                 <div class="mb-4">
                     <label for="user_name" class="block text-sm font-medium text-gray-700">Full Name</label>
-                    <input type="text" id="user_name" name="name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                    <input type="text" id="user_name" name="name" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                     <p class="mt-1 text-xs text-gray-500">If blank, username will be displayed</p>
                 </div>
                 
                 <div class="mb-4">
                     <label for="user_email" class="block text-sm font-medium text-gray-700">Email *</label>
-                    <input type="email" id="user_email" name="email" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                    <input type="email" id="user_email" name="email" required class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                 </div>
                 
                 <div class="mb-4">
                     <label for="user_password" class="block text-sm font-medium text-gray-700">Password *</label>
-                    <input type="password" id="user_password" name="password" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                    <input type="password" id="user_password" name="password" required class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                 </div>
                 
                 <div class="mb-4">
                     <label for="user_group" class="block text-sm font-medium text-gray-700">Role *</label>
-                    <select id="user_group" name="user_group" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                    <select id="user_group" name="user_group" required class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                         <option value="">Select a role</option>
                         <option value="Admin">Admin</option>
                         <option value="Technician">Technician</option>

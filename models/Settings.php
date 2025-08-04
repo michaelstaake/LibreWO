@@ -40,12 +40,12 @@ class Settings extends Model {
     
     public function getCompanyInfo() {
         return [
-            'company_name' => $this->getSetting('company_name', 'Your Company'),
+            'company_name' => $this->getSetting('company_name', 'LibreWO'),
             'company_address' => $this->getSetting('company_address', ''),
             'company_phone' => $this->getSetting('company_phone', ''),
             'company_email' => $this->getSetting('company_email', ''),
             'company_logo' => $this->getSetting('company_logo', ''),
-            'work_order_disclaimer' => $this->getSetting('work_order_disclaimer', 'Standard disclaimer text here.')
+            'work_order_disclaimer' => $this->getSetting('work_order_disclaimer', 'Set up your Disclaimer on the Settings page')
         ];
     }
     

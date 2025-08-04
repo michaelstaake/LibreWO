@@ -307,7 +307,7 @@ ob_start();
                             </h3>
                             <div class="mt-4">
                                 <label for="modal_new_password" class="block text-sm font-medium text-gray-700">New Password *</label>
-                                <input type="password" id="modal_new_password" name="new_password" required minlength="8" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                                <input type="password" id="modal_new_password" name="new_password" required minlength="8" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                                 <p class="mt-1 text-sm text-gray-500">Password must be at least 8 characters long</p>
                             </div>
                             <div class="mt-4">

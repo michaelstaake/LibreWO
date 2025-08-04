@@ -51,7 +51,7 @@ ob_start();
                         <div class="relative">
                             <input type="text" 
                                    id="customer_search" 
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                                   class="w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 bg-white"
                                    placeholder="Search by name, company, email, or phone...">
                             <div id="customer_results" class="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 hidden max-h-60 overflow-auto"></div>
                         </div>
@@ -90,7 +90,7 @@ ob_start();
                                 <input type="text" 
                                        name="customer_name" 
                                        id="customer_name"
-                                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                                       class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 bg-white">
                             </div>
                             
                             <div>
@@ -100,7 +100,7 @@ ob_start();
                                 <input type="tel" 
                                        name="customer_phone" 
                                        id="customer_phone"
-                                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                                       class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 bg-white">
                             </div>
                             
                             <div>
@@ -110,7 +110,7 @@ ob_start();
                                 <input type="text" 
                                        name="customer_company" 
                                        id="customer_company"
-                                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                                       class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 bg-white">
                             </div>
                             
                             <div>
@@ -120,7 +120,7 @@ ob_start();
                                 <input type="email" 
                                        name="customer_email" 
                                        id="customer_email"
-                                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                                       class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 bg-white">
                             </div>
                         </div>
                     </div>
@@ -150,7 +150,7 @@ ob_start();
                                    id="computer"
                                    required
                                    value="<?= htmlspecialchars($workOrderData['computer'] ?? '') ?>"
-                                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                                   class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 bg-white"
                                    placeholder="e.g., Dell Laptop, HP Desktop">
                         </div>
                         
@@ -163,7 +163,7 @@ ob_start();
                                        name="model" 
                                        id="model"
                                        value="<?= htmlspecialchars($workOrderData['model'] ?? '') ?>"
-                                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                                       class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 bg-white">
                             </div>
                             
                             <div>
@@ -174,7 +174,7 @@ ob_start();
                                        name="serial_number" 
                                        id="serial_number"
                                        value="<?= htmlspecialchars($workOrderData['serial_number'] ?? '') ?>"
-                                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                                       class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 bg-white">
                             </div>
                         </div>
 
@@ -202,7 +202,7 @@ ob_start();
                                 <input type="text" 
                                        name="accessories[]" 
                                        placeholder="Other (specify)"
-                                       class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                                       class="block w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 bg-white">
                             </div>
                         </div>
 
@@ -216,7 +216,7 @@ ob_start();
                                        name="username" 
                                        id="username"
                                        value="<?= htmlspecialchars($workOrderData['username'] ?? '') ?>"
-                                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                                       class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 bg-white">
                             </div>
                             
                             <div>
@@ -227,7 +227,7 @@ ob_start();
                                        name="password" 
                                        id="password"
                                        value="<?= htmlspecialchars($workOrderData['password'] ?? '') ?>"
-                                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                                       class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 bg-white">
                             </div>
                         </div>
                         <?php endif; ?>
@@ -258,7 +258,7 @@ ob_start();
                                   id="description" 
                                   rows="6" 
                                   required
-                                  class="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                                  class="block w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 bg-white"
                                   placeholder="Please describe the issue in detail..."><?= htmlspecialchars($workOrderData['description'] ?? '') ?></textarea>
                     </div>
 
@@ -322,7 +322,7 @@ ob_start();
                             </label>
                             <select name="assigned_to" 
                                     id="assigned_to"
-                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                                    class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 bg-white">
                                 <option value="">Unassigned</option>
                                 <?php foreach ($technicians as $technician): ?>
                                     <option value="<?= $technician['id'] ?>">
@@ -338,7 +338,7 @@ ob_start();
                             </label>
                             <select name="priority" 
                                     id="priority"
-                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+                                    class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 bg-white">
                                 <option value="Standard">Standard</option>
                                 <option value="Priority">Priority</option>
                             </select>

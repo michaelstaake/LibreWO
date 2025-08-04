@@ -193,22 +193,22 @@ ob_start();
                 
                 <div class="mb-4">
                     <label for="customer_name" class="block text-sm font-medium text-gray-700">Name *</label>
-                    <input type="text" id="customer_name" name="name" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                    <input type="text" id="customer_name" name="name" required class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                 </div>
                 
                 <div class="mb-4">
                     <label for="customer_company" class="block text-sm font-medium text-gray-700">Company</label>
-                    <input type="text" id="customer_company" name="company" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                    <input type="text" id="customer_company" name="company" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                 </div>
                 
                 <div class="mb-4">
                     <label for="customer_email" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" id="customer_email" name="email" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                    <input type="email" id="customer_email" name="email" class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                 </div>
                 
                 <div class="mb-4">
                     <label for="customer_phone" class="block text-sm font-medium text-gray-700">Phone *</label>
-                    <input type="tel" id="customer_phone" name="phone" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                    <input type="tel" id="customer_phone" name="phone" required class="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white">
                 </div>
                 
                 <div class="flex justify-end space-x-3">

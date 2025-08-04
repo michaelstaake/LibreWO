@@ -225,12 +225,12 @@ class InstallController extends Controller {
         $settings = new Settings();
         
         $defaultSettings = [
-            'company_name' => 'Your Computer Repair Shop',
+            'company_name' => 'LibreWO',
             'company_address' => '',
             'company_phone' => '',
             'company_email' => '',
             'company_logo' => '',
-            'work_order_disclaimer' => 'I authorize the above repair work to be done along with the necessary material, and hereby grant you and/or your employees permission to operate this vehicle/equipment for testing purposes. I promise to pay for all work performed at the above prices. We reserve the right to charge a storage fee for equipment left over 30 days from the time of notification that the work is complete.',
+            'work_order_disclaimer' => 'Set up your Disclaimer on the Settings page',
             'captcha_provider' => 'off',
             'turnstile_site_key' => '',
             'turnstile_secret_key' => '',
