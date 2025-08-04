@@ -106,11 +106,10 @@ class WorkOrder extends Model {
         $result = $this->update($id, $data);
         
         if ($result) {
-            // Log changes
+            // Log changes with improved details
             foreach ($data as $field => $newValue) {
                 if (isset($oldData[$field]) && $oldData[$field] != $newValue) {
-                    $this->logWorkOrderAction($id, 'updated', 
-                        "Changed $field from '{$oldData[$field]}' to '$newValue'");
+                    $this->logWorkOrderChange($id, $field, $oldData[$field], $newValue);
                 }
             }
         }
@@ -213,9 +212,59 @@ class WorkOrder extends Model {
         ]);
     }
     
+    public function logWorkOrderChange($workOrderId, $field, $oldValue, $newValue) {
+        $details = '';
+        $oldValueForLog = $oldValue;
+        $newValueForLog = $newValue;
+        
+        // Handle special cases
+        if ($field === 'assigned_to') {
+            // Get usernames for assignment changes
+            $oldUser = $oldValue ? $this->getUserById($oldValue) : null;
+            $newUser = $newValue ? $this->getUserById($newValue) : null;
+            
+            $oldValueForLog = $oldUser ? $oldUser['username'] : 'Unassigned';
+            $newValueForLog = $newUser ? $newUser['username'] : 'Unassigned';
+            $details = "Assigned to {$newValueForLog}" . ($oldUser ? " (was {$oldValueForLog})" : "");
+            
+        } elseif (in_array($field, ['description', 'resolution', 'notes'])) {
+            // For long text fields, just indicate what changed
+            $fieldName = ucfirst($field);
+            $details = "{$fieldName} updated";
+            
+        } else {
+            // For other fields, show the change
+            $fieldName = ucfirst(str_replace('_', ' ', $field));
+            $details = "Changed {$fieldName} from '{$oldValueForLog}' to '{$newValueForLog}'";
+        }
+        
+        // Store additional data for modal viewing (concatenated into details for now)
+        if (in_array($field, ['description', 'resolution', 'notes'])) {
+            $details .= "|||OLD:" . base64_encode($oldValue) . "|||NEW:" . base64_encode($newValue);
+        }
+        
+        $stmt = $this->db->prepare("
+            INSERT INTO work_order_logs (work_order_id, user_id, action, details, created_at) 
+            VALUES (?, ?, ?, ?, NOW())
+        ");
+        return $stmt->execute([
+            $workOrderId, 
+            $_SESSION['user_id'] ?? null, 
+            'updated', 
+            $details
+        ]);
+    }
+    
+    private function getUserById($userId) {
+        $stmt = $this->db->prepare("SELECT id, username, name FROM users WHERE id = ?");
+        $stmt->execute([$userId]);
+        return $stmt->fetch();
+    }
+    
     public function getWorkOrderLogs($workOrderId) {
         $stmt = $this->db->prepare("
-            SELECT wol.*, u.username 
+            SELECT wol.*, u.username, u.name as user_name,
+                   COALESCE(NULLIF(u.name, ''), u.username) as user_display_name
             FROM work_order_logs wol
             LEFT JOIN users u ON wol.user_id = u.id
             WHERE wol.work_order_id = ?

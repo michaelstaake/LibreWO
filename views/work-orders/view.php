@@ -32,9 +32,6 @@ ob_start();
                     </span>
                     <?php endif; ?>
                 </div>
-                <p class="mt-1 text-sm text-gray-600">
-                    Created <?= date('M j, Y g:i A', strtotime($workOrder['created_at'])) ?>
-                </p>
             </div>
             <div class="flex space-x-3">
                 <a href="<?= BASE_URL ?>/work-orders/print/<?= $workOrder['id'] ?>" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
@@ -95,13 +92,25 @@ ob_start();
                 <div class="px-6 py-4">
                     <dl class="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
                         <div>
+                            <dt class="text-sm font-medium text-gray-500">Date Opened</dt>
+                            <dd class="mt-1 text-sm text-gray-900"><?= date('M j, Y g:i A', strtotime($workOrder['created_at'])) ?></dd>
+                        </div>
+                        <?php if ($workOrder['status'] === 'Closed' && isset($workOrder['updated_at'])): ?>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Date Closed</dt>
+                            <dd class="mt-1 text-sm text-gray-900"><?= date('M j, Y g:i A', strtotime($workOrder['updated_at'])) ?></dd>
+                        </div>
+                        <?php endif; ?>
+                        <div>
                             <dt class="text-sm font-medium text-gray-500">Device Type</dt>
                             <dd class="mt-1 text-sm text-gray-900"><?= htmlspecialchars($workOrder['computer'] ?? '') ?></dd>
                         </div>
+                        <?php if (!empty($workOrder['model'])): ?>
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Device Model</dt>
-                            <dd class="mt-1 text-sm text-gray-900"><?= htmlspecialchars($workOrder['model'] ?? '') ?></dd>
+                            <dd class="mt-1 text-sm text-gray-900"><?= htmlspecialchars($workOrder['model']) ?></dd>
                         </div>
+                        <?php endif; ?>
                         <?php if ($workOrder['serial_number']): ?>
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Serial Number</dt>
@@ -128,174 +137,232 @@ ob_start();
                             </dd>
                         </div>
                         <?php endif; ?>
-                        <div class="sm:col-span-2">
-                            <dt class="text-sm font-medium text-gray-500">Problem Description</dt>
-                            <dd class="mt-1 text-sm text-gray-900"><?= nl2br(htmlspecialchars($workOrder['description'])) ?></dd>
-                        </div>
-                        <?php if ($workOrder['resolution']): ?>
-                        <div class="sm:col-span-2">
-                            <dt class="text-sm font-medium text-gray-500">Resolution</dt>
-                            <dd class="mt-1 text-sm text-gray-900"><?= nl2br(htmlspecialchars($workOrder['resolution'])) ?></dd>
-                        </div>
-                        <?php endif; ?>
-                        <?php if ($workOrder['notes']): ?>
-                        <div class="sm:col-span-2">
-                            <dt class="text-sm font-medium text-gray-500">Notes</dt>
-                            <dd class="mt-1 text-sm text-gray-900"><?= nl2br(htmlspecialchars($workOrder['notes'])) ?></dd>
-                        </div>
-                        <?php endif; ?>
                     </dl>
                 </div>
             </div>
-
-            <!-- Update Form (if not Limited user) -->
-            <?php if ($_SESSION['user_group'] !== 'Limited'): ?>
-            <div class="mt-6 bg-white shadow rounded-lg">
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <h2 class="text-lg font-medium text-gray-900">Update Work Order</h2>
-                </div>
-                <form method="POST" class="px-6 py-4">
-                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
-                    
-                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        <div>
-                            <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                            <select id="status" name="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
-                                <option value="Open" <?= $workOrder['status'] === 'Open' ? 'selected' : '' ?>>Open</option>
-                                <option value="In Progress" <?= $workOrder['status'] === 'In Progress' ? 'selected' : '' ?>>In Progress</option>
-                                <option value="Awaiting Parts" <?= $workOrder['status'] === 'Awaiting Parts' ? 'selected' : '' ?>>Awaiting Parts</option>
-                                <option value="Closed" <?= $workOrder['status'] === 'Closed' ? 'selected' : '' ?>>Closed</option>
-                                <option value="Picked Up" <?= $workOrder['status'] === 'Picked Up' ? 'selected' : '' ?>>Picked Up</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="priority" class="block text-sm font-medium text-gray-700">Priority</label>
-                            <select id="priority" name="priority" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
-                                <option value="Standard" <?= $workOrder['priority'] === 'Standard' ? 'selected' : '' ?>>Standard</option>
-                                <option value="Priority" <?= $workOrder['priority'] === 'Priority' ? 'selected' : '' ?>>Priority</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="assigned_to" class="block text-sm font-medium text-gray-700">Assigned To</label>
-                            <select id="assigned_to" name="assigned_to" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
-                                <option value="">Unassigned</option>
-                                <?php foreach ($technicians as $tech): ?>
-                                    <option value="<?= $tech['id'] ?>" <?= $workOrder['assigned_to'] == $tech['id'] ? 'selected' : '' ?>>
-                                        <?= !empty($tech['name']) ? htmlspecialchars($tech['name']) : htmlspecialchars($tech['username']) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-
-                        <div class="sm:col-span-2 lg:col-span-3">
-                            <label for="description" class="block text-sm font-medium text-gray-700">Problem Description</label>
-                            <textarea id="description" name="description" rows="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"><?= htmlspecialchars($workOrder['description']) ?></textarea>
-                        </div>
-
-                        <div class="sm:col-span-2">
-                            <label for="resolution" class="block text-sm font-medium text-gray-700">Resolution</label>
-                            <textarea id="resolution" name="resolution" rows="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"><?= htmlspecialchars($workOrder['resolution'] ?? '') ?></textarea>
-                        </div>
-
-                        <div class="sm:col-span-2">
-                            <label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
-                            <textarea id="notes" name="notes" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"><?= htmlspecialchars($workOrder['notes'] ?? '') ?></textarea>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 flex justify-end">
-                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                            Update Work Order
-                        </button>
-                    </div>
-                </form>
-            </div>
-            <?php endif; ?>
         </div>
-
         <!-- Customer Information -->
         <div>
-            <div class="bg-white shadow rounded-lg">
+            <a href="<?= BASE_URL ?>/customers/view/<?= $workOrder['customer_id'] ?>" class="block bg-white shadow rounded-lg hover:bg-gray-50 transition-colors duration-200">
                 <div class="px-6 py-4 border-b border-gray-200">
                     <h2 class="text-lg font-medium text-gray-900">Customer Information</h2>
                 </div>
                 <div class="px-6 py-4">
-                    <dl class="space-y-4">
+                    <div class="space-y-4">
+                        <!-- Name and Company -->
                         <div>
-                            <dt class="text-sm font-medium text-gray-500">Name</dt>
-                            <dd class="mt-1 text-sm text-gray-900"><?= htmlspecialchars($workOrder['customer_name']) ?></dd>
+                            <div class="text-lg font-semibold text-gray-900"><?= htmlspecialchars($workOrder['customer_name']) ?></div>
+                            <?php if ($workOrder['customer_company']): ?>
+                            <div class="text-sm text-gray-600"><?= htmlspecialchars($workOrder['customer_company']) ?></div>
+                            <?php endif; ?>
                         </div>
-                        <?php if ($workOrder['customer_company']): ?>
+                        
+                        <!-- Phone and Email -->
+                        <?php if ($workOrder['customer_phone'] || $workOrder['customer_email']): ?>
                         <div>
-                            <dt class="text-sm font-medium text-gray-500">Company</dt>
-                            <dd class="mt-1 text-sm text-gray-900"><?= htmlspecialchars($workOrder['customer_company']) ?></dd>
+                            <?php if ($workOrder['customer_phone']): ?>
+                            <div class="text-base font-medium text-gray-900">
+                                <?= htmlspecialchars($workOrder['customer_phone']) ?>
+                            </div>
+                            <?php endif; ?>
+                            <?php if ($workOrder['customer_email']): ?>
+                            <div class="text-sm text-gray-600">
+                                <?= htmlspecialchars($workOrder['customer_email']) ?>
+                            </div>
+                            <?php endif; ?>
                         </div>
                         <?php endif; ?>
-                        <?php if ($workOrder['customer_email']): ?>
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">Email</dt>
-                            <dd class="mt-1 text-sm text-gray-900">
-                                <a href="mailto:<?= htmlspecialchars($workOrder['customer_email']) ?>" class="text-primary-600 hover:text-primary-500">
-                                    <?= htmlspecialchars($workOrder['customer_email']) ?>
-                                </a>
-                            </dd>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+        
+            
+    <!-- Work Order Contents -->
+    <?php if ($_SESSION['user_group'] !== 'Limited'): ?>
+        <div class="grid grid-cols-1 gap-6">
+            <div class="mt-6 bg-white shadow rounded-lg">
+                <div class="px-4 py-5">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Work Order Contents</h3>
+                    <form method="POST">
+                        <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-4">
+                            <div>
+                                <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                                <select id="status" name="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                                    <option value="Open" <?= $workOrder['status'] === 'Open' ? 'selected' : '' ?>>Open</option>
+                                    <option value="In Progress" <?= $workOrder['status'] === 'In Progress' ? 'selected' : '' ?>>In Progress</option>
+                                    <option value="Awaiting Parts" <?= $workOrder['status'] === 'Awaiting Parts' ? 'selected' : '' ?>>Awaiting Parts</option>
+                                    <option value="Closed" <?= $workOrder['status'] === 'Closed' ? 'selected' : '' ?>>Closed</option>
+                                    <option value="Picked Up" <?= $workOrder['status'] === 'Picked Up' ? 'selected' : '' ?>>Picked Up</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="priority" class="block text-sm font-medium text-gray-700">Priority</label>
+                                <select id="priority" name="priority" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                                    <option value="Standard" <?= $workOrder['priority'] === 'Standard' ? 'selected' : '' ?>>Standard</option>
+                                    <option value="Priority" <?= $workOrder['priority'] === 'Priority' ? 'selected' : '' ?>>Priority</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="assigned_to" class="block text-sm font-medium text-gray-700">Assigned To</label>
+                                <select id="assigned_to" name="assigned_to" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                                    <option value="">Unassigned</option>
+                                    <?php foreach ($technicians as $tech): ?>
+                                        <option value="<?= $tech['id'] ?>" <?= $workOrder['assigned_to'] == $tech['id'] ? 'selected' : '' ?>>
+                                            <?= !empty($tech['name']) ? htmlspecialchars($tech['name']) : htmlspecialchars($tech['username']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                         </div>
-                        <?php endif; ?>
-                        <?php if ($workOrder['customer_phone']): ?>
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">Phone</dt>
-                            <dd class="mt-1 text-sm text-gray-900">
-                                <a href="tel:<?= htmlspecialchars($workOrder['customer_phone']) ?>" class="text-primary-600 hover:text-primary-500">
-                                    <?= htmlspecialchars($workOrder['customer_phone']) ?>
-                                </a>
-                            </dd>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="description" class="block text-sm font-medium text-gray-700">Work Order Description</label>
+                                <textarea id="description" name="description" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"><?= htmlspecialchars($workOrder['description']) ?></textarea>
+                            </div>
+
+                            <div>
+                                <label for="resolution" class="block text-sm font-medium text-gray-700">Work Order Resolution</label>
+                                <textarea id="resolution" name="resolution" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"><?= htmlspecialchars($workOrder['resolution'] ?? '') ?></textarea>
+                            </div>
+
+                            <div>
+                                <label for="notes" class="block text-sm font-medium text-gray-700">Work Order Notes</label>
+                                <textarea id="notes" name="notes" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"><?= htmlspecialchars($workOrder['notes'] ?? '') ?></textarea>
+                            </div>
+
+                            <div class="pt-4">
+                                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                                    Update Work Order
+                                </button>
+                            </div>
                         </div>
-                        <?php endif; ?>
-                        <div class="pt-4 border-t border-gray-200">
-                            <a href="<?= BASE_URL ?>/customers/view/<?= $workOrder['customer_id'] ?>" class="text-sm text-primary-600 hover:text-primary-500">
-                                View Customer Details →
-                            </a>
-                        </div>
-                    </dl>
+                    </form>
                 </div>
             </div>
-
-            <!-- Activity Log -->
-            <?php if (!empty($workOrderLogs)): ?>
+        </div>
+    <?php else: ?>
+        <div class="grid grid-cols-1 gap-6">
             <div class="mt-6 bg-white shadow rounded-lg">
                 <div class="px-6 py-4 border-b border-gray-200">
-                    <h2 class="text-lg font-medium text-gray-900">Activity Log</h2>
+                    <h2 class="text-lg font-medium text-gray-900">Work Order Contents</h2>
                 </div>
                 <div class="px-6 py-4">
-                    <div class="space-y-3">
-                        <?php foreach ($workOrderLogs as $log): ?>
-                        <div class="flex items-start space-x-3 py-2 border-b border-gray-100 last:border-b-0">
-                            <div class="flex-shrink-0">
-                                <span class="h-6 w-6 rounded-full bg-gray-400 flex items-center justify-center">
-                                    <svg class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </span>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-start justify-between">
-                                    <div class="flex-1">
-                                        <p class="text-sm text-gray-900"><?= htmlspecialchars($log['details'] ?? '') ?></p>
-                                        <p class="text-xs text-gray-500 mt-1">by <?= htmlspecialchars($log['username'] ?? 'Unknown') ?></p>
-                                    </div>
-                                    <div class="flex-shrink-0 ml-4">
-                                        <span class="text-xs text-gray-500"><?= date('M j, g:i A', strtotime($log['created_at'])) ?></span>
-                                    </div>
+                    <div class="sm:col-span-2 mb-4">
+                        <dt class="text-sm font-medium text-gray-500">Work Order Description</dt>
+                        <dd class="mt-1 text-sm text-gray-900"><?= nl2br(htmlspecialchars($workOrder['description'])) ?></dd>
+                    </div>
+                    <?php if ($workOrder['resolution']): ?>
+                    <div class="sm:col-span-2 mb-4">
+                        <dt class="text-sm font-medium text-gray-500">Work Order Resolution</dt>
+                        <dd class="mt-1 text-sm text-gray-900"><?= nl2br(htmlspecialchars($workOrder['resolution'])) ?></dd>
+                    </div>
+                    <?php endif; ?>
+                    <?php if ($workOrder['notes']): ?>
+                    <div class="sm:col-span-2">
+                        <dt class="text-sm font-medium text-gray-500">Work Order Notes</dt>
+                        <dd class="mt-1 text-sm text-gray-900"><?= nl2br(htmlspecialchars($workOrder['notes'])) ?></dd>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+    
+    <div class="grid grid-cols-1 gap-6">
+        <!-- Activity Log -->
+        <?php if (!empty($workOrderLogs)): ?>
+        <div class="mt-6 bg-white shadow rounded-lg">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-medium text-gray-900">Activity Log</h2>
+            </div>
+            <div class="px-6 py-4">
+                <div class="space-y-3">
+                    <?php foreach ($workOrderLogs as $log): ?>
+                    <div class="flex items-start space-x-3 py-2 border-b border-gray-100 last:border-b-0">
+                        <div class="flex-shrink-0">
+                            <span class="h-6 w-6 rounded-full bg-gray-400 flex items-center justify-center">
+                                <svg class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between">
+                                <div class="flex-1">
+                                    <?php 
+                                    $details = $log['details'] ?? '';
+                                    $hasExtraData = strpos($details, '|||OLD:') !== false;
+                                    
+                                    if ($hasExtraData) {
+                                        // Extract the main message (everything before |||OLD:)
+                                        $mainDetails = explode('|||OLD:', $details)[0];
+                                        echo '<p class="text-sm text-gray-900">' . htmlspecialchars($mainDetails) . '</p>';
+                                        
+                                        // Add "View Details" button for description/resolution/notes changes
+                                        echo '<button type="button" onclick="openChangeModal(\'' . htmlspecialchars(json_encode($details)) . '\')" class="mt-1 text-xs text-primary-600 hover:text-primary-500">View Details</button>';
+                                    } else {
+                                        echo '<p class="text-sm text-gray-900">' . htmlspecialchars($details) . '</p>';
+                                    }
+                                    ?>
+                                    <p class="text-xs text-gray-500 mt-1">by <?= htmlspecialchars($log['user_display_name'] ?? $log['username'] ?? 'Unknown') ?></p>
+                                </div>
+                                <div class="flex-shrink-0 ml-4">
+                                    <span class="text-xs text-gray-500"><?= date('M j, g:i A', strtotime($log['created_at'])) ?></span>
                                 </div>
                             </div>
                         </div>
-                        <?php endforeach; ?>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
+    </div>
+
+<!-- Change Details Modal -->
+<div id="changeModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+        
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        
+        <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full sm:p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900">Change Details</h3>
+                <button type="button" onclick="closeChangeModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">Before</h4>
+                    <div class="bg-red-50 border border-red-200 rounded-md p-3">
+                        <pre id="beforeContent" class="text-sm text-gray-900 whitespace-pre-wrap font-mono"></pre>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">After</h4>
+                    <div class="bg-green-50 border border-green-200 rounded-md p-3">
+                        <pre id="afterContent" class="text-sm text-gray-900 whitespace-pre-wrap font-mono"></pre>
                     </div>
                 </div>
             </div>
-            <?php endif; ?>
+            
+            <div class="mt-6 flex justify-end">
+                <button type="button" onclick="closeChangeModal()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+                    Close
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -461,6 +528,54 @@ document.getElementById('loginModal').addEventListener('click', function(e) {
     }
 });
 
+// Change modal functions
+function openChangeModal(detailsData) {
+    try {
+        // Parse the encoded details
+        const details = JSON.parse(detailsData);
+        const parts = details.split('|||');
+        
+        if (parts.length >= 3) {
+            const oldData = parts[1].replace('OLD:', '');
+            const newData = parts[2].replace('NEW:', '');
+            
+            // Decode base64 content
+            const beforeContent = atob(oldData);
+            const afterContent = atob(newData);
+            
+            document.getElementById('beforeContent').textContent = beforeContent || '(empty)';
+            document.getElementById('afterContent').textContent = afterContent || '(empty)';
+            
+            document.getElementById('changeModal').classList.remove('hidden');
+        }
+    } catch (error) {
+        console.error('Error parsing change details:', error);
+        alert('Error loading change details');
+    }
+}
+
+function closeChangeModal() {
+    document.getElementById('changeModal').classList.add('hidden');
+}
+
+// Close change modal when clicking outside
+document.getElementById('changeModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeChangeModal();
+    }
+});
+
+// Close modals with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeLoginModal();
+        closeChangeModal();
+        if (document.getElementById('deleteModal')) {
+            closeDeleteModal();
+        }
+    }
+});
+
 // Delete modal functions
 function openDeleteModal() {
     document.getElementById('deleteModal').classList.remove('hidden');
@@ -474,18 +589,6 @@ function closeDeleteModal() {
 document.getElementById('deleteModal')?.addEventListener('click', function(e) {
     if (e.target === this) {
         closeDeleteModal();
-    }
-});
-
-// Close modals with Escape key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        if (!document.getElementById('loginModal').classList.contains('hidden')) {
-            closeLoginModal();
-        }
-        if (document.getElementById('deleteModal') && !document.getElementById('deleteModal').classList.contains('hidden')) {
-            closeDeleteModal();
-        }
     }
 });
 </script>
