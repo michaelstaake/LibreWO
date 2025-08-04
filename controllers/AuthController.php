@@ -47,11 +47,20 @@ class AuthController extends Controller {
                     
                     // Verify CAPTCHA if enabled
                     $captchaProvider = $this->settingsModel->getSetting('captcha_provider', 'off');
-                    $turnstileSiteKey = $this->settingsModel->getSetting('turnstile_site_key', '');
                     
-                    if ($captchaProvider === 'turnstile' && !empty($turnstileSiteKey)) {
-                        if (!$this->verifyTurnstile($_POST['cf-turnstile-response'] ?? '')) {
-                            throw new Exception('CAPTCHA verification failed. Please try again.');
+                    if ($captchaProvider === 'turnstile') {
+                        $turnstileSiteKey = $this->settingsModel->getSetting('turnstile_site_key', '');
+                        if (!empty($turnstileSiteKey)) {
+                            if (!$this->verifyTurnstile($_POST['cf-turnstile-response'] ?? '')) {
+                                throw new Exception('CAPTCHA verification failed. Please try again.');
+                            }
+                        }
+                    } elseif ($captchaProvider === 'recaptcha') {
+                        $recaptchaSiteKey = $this->settingsModel->getSetting('recaptcha_site_key', '');
+                        if (!empty($recaptchaSiteKey)) {
+                            if (!$this->verifyRecaptcha($_POST['g-recaptcha-response'] ?? '')) {
+                                throw new Exception('CAPTCHA verification failed. Please try again.');
+                            }
                         }
                     }
                 
@@ -63,12 +72,22 @@ class AuthController extends Controller {
                     
                     if ($user && $this->userModel->verifyPassword($password, $user['password'])) {
                         // Check if 2FA is required
-                        if (!$this->userModel->hasRecentLogin($user['id'], $ip)) {
+                        $require2FAAlways = $this->settingsModel->getSetting('require_2fa', false);
+                        $hasRecentLogin = $this->userModel->hasRecentLogin($user['id'], $ip);
+                        
+                        // Require 2FA if:
+                        // 1. Setting is enabled (always require), OR
+                        // 2. Setting is disabled but no recent login from this IP (new location)
+                        if ($require2FAAlways || !$hasRecentLogin) {
                             $code = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
                             $this->userModel->store2FACode($user['id'], $code);
                             
                             if ($this->send2FAEmail($user['email'], $code)) {
-                                $message = 'A verification code has been sent to your email address.';
+                                if ($require2FAAlways) {
+                                    $message = 'Two-factor authentication is required. A verification code has been sent to your email address.';
+                                } else {
+                                    $message = 'Login from new location detected. A verification code has been sent to your email address.';
+                                }
                             } else {
                                 $message = 'Verification code generated. Please check the system logs or contact your administrator.';
                             }
@@ -93,7 +112,8 @@ class AuthController extends Controller {
         // Get CAPTCHA settings
         $captchaSettings = [
             'captcha_provider' => $this->settingsModel->getSetting('captcha_provider', 'off'),
-            'turnstile_site_key' => $this->settingsModel->getSetting('turnstile_site_key', '')
+            'turnstile_site_key' => $this->settingsModel->getSetting('turnstile_site_key', ''),
+            'recaptcha_site_key' => $this->settingsModel->getSetting('recaptcha_site_key', '')
         ];
         
         $this->view('auth/login', [
@@ -123,6 +143,9 @@ class AuthController extends Controller {
         // Log the login
         $this->logger->log('user_login', 'User logged in successfully', $userId, $ip);
         
+        // Clean up old logs (older than 60 days)
+        $this->logger->cleanupOldLogs(60);
+        
         // Clean up pending 2FA
         unset($_SESSION['pending_2fa_user']);
     }
@@ -150,6 +173,10 @@ class AuthController extends Controller {
                     if (!$this->verifyTurnstile($_POST['cf-turnstile-response'] ?? '')) {
                         throw new Exception('CAPTCHA verification failed. Please try again.');
                     }
+                } elseif ($captchaProvider === 'recaptcha') {
+                    if (!$this->verifyRecaptcha($_POST['g-recaptcha-response'] ?? '')) {
+                        throw new Exception('CAPTCHA verification failed. Please try again.');
+                    }
                 }
                 
                 $email = $this->sanitizeInput($_POST['email']);
@@ -157,7 +184,7 @@ class AuthController extends Controller {
                 
                 if ($user) {
                     $token = bin2hex(random_bytes(32));
-                    $this->userModel->update($user['id'], [
+                    $this->userModel->updateUser($user['id'], [
                         'reset_token' => $token,
                         'reset_expires' => date('Y-m-d H:i:s', strtotime('+1 hour'))
                     ]);
@@ -176,7 +203,8 @@ class AuthController extends Controller {
         // Get CAPTCHA settings
         $captchaSettings = [
             'captcha_provider' => $this->settingsModel->getSetting('captcha_provider', 'off'),
-            'turnstile_site_key' => $this->settingsModel->getSetting('turnstile_site_key', '')
+            'turnstile_site_key' => $this->settingsModel->getSetting('turnstile_site_key', ''),
+            'recaptcha_site_key' => $this->settingsModel->getSetting('recaptcha_site_key', '')
         ];
         
         $this->view('auth/forgot-password', [
@@ -196,10 +224,17 @@ class AuthController extends Controller {
             $this->redirect('/login');
         }
         
-        $user = $this->userModel->findOneWhere('reset_token = ? AND reset_expires > NOW()', [$token]);
+        $user = $this->userModel->findByResetToken($token);
         
         if (!$user) {
-            $error = 'Invalid or expired reset token.';
+            // Debug: Check if token exists at all
+            $debugUser = $this->userModel->findByResetTokenDebug($token);
+            if ($debugUser) {
+                $now = date('Y-m-d H:i:s');
+                $error = "Reset token has expired. Token expires at: " . $debugUser['reset_expires'] . ", Current time: " . $now;
+            } else {
+                $error = 'Invalid reset token.';
+            }
         }
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error) {
@@ -218,7 +253,7 @@ class AuthController extends Controller {
                 }
                 
                 $this->userModel->updatePassword($user['id'], $password);
-                $this->userModel->update($user['id'], [
+                $this->userModel->updateUser($user['id'], [
                     'reset_token' => null,
                     'reset_expires' => null
                 ]);
@@ -242,7 +277,9 @@ class AuthController extends Controller {
     private function send2FAEmail($email, $code) {
         try {
             require_once ROOT_PATH . '/core/EmailSender.php';
-            $emailSender = new EmailSender();
+            $companyName = $this->settingsModel->getSetting('company_name', 'LibreWO');
+            $companyName = !empty($companyName) ? $companyName : 'LibreWO';
+            $emailSender = new EmailSender($companyName);
             
             // Get user info for personalized email
             $user = $this->userModel->findByEmail($email);
@@ -260,7 +297,9 @@ class AuthController extends Controller {
     private function sendPasswordResetEmail($email, $token) {
         try {
             require_once ROOT_PATH . '/core/EmailSender.php';
-            $emailSender = new EmailSender();
+            $companyName = $this->settingsModel->getSetting('company_name', 'LibreWO');
+            $companyName = !empty($companyName) ? $companyName : 'LibreWO';
+            $emailSender = new EmailSender($companyName);
             
             // Get user info for personalized email
             $user = $this->userModel->findByEmail($email);
@@ -302,6 +341,41 @@ class AuthController extends Controller {
         
         $context = stream_context_create($options);
         $result = file_get_contents('https://challenges.cloudflare.com/turnstile/v0/siteverify', false, $context);
+        
+        if ($result === false) {
+            return false;
+        }
+        
+        $resultJson = json_decode($result, true);
+        return isset($resultJson['success']) && $resultJson['success'] === true;
+    }
+    
+    private function verifyRecaptcha($response) {
+        if (empty($response)) {
+            return false;
+        }
+        
+        $secretKey = $this->settingsModel->getSetting('recaptcha_secret_key', '');
+        if (empty($secretKey)) {
+            return false;
+        }
+        
+        $data = [
+            'secret' => $secretKey,
+            'response' => $response,
+            'remoteip' => $_SERVER['REMOTE_ADDR'] ?? ''
+        ];
+        
+        $options = [
+            'http' => [
+                'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method' => 'POST',
+                'content' => http_build_query($data),
+            ],
+        ];
+        
+        $context = stream_context_create($options);
+        $result = file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $context);
         
         if ($result === false) {
             return false;

@@ -15,6 +15,37 @@ ob_start();
         </div>
     </div>
 
+    <!-- Success/Error Messages -->
+    <?php if (isset($_GET['message'])): ?>
+        <div class="mb-6 bg-green-50 border border-green-200 rounded-md p-4">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-green-600"><?= htmlspecialchars($_GET['message']) ?></p>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['error'])): ?>
+        <div class="mb-6 bg-red-50 border border-red-200 rounded-md p-4">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-red-600"><?= htmlspecialchars($_GET['error']) ?></p>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
     <!-- Filters -->
     <div class="bg-white rounded-lg shadow mb-6">
         <div class="px-6 py-4 border-b border-gray-200">
@@ -93,7 +124,9 @@ ob_start();
                             <tr class="<?= $workOrder['priority'] === 'Priority' ? 'bg-red-50 hover:bg-red-100' : 'hover:bg-gray-50' ?>">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">
-                                        #<?= $workOrder['id'] ?>
+                                        <a href="<?= BASE_URL ?>/work-orders/view/<?= $workOrder['id'] ?>" class="text-primary-600 hover:text-primary-500">
+                                            #<?= $workOrder['id'] ?>
+                                        </a>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">

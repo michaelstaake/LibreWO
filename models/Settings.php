@@ -51,7 +51,7 @@ class Settings extends Model {
     
     public function getCaptchaSettings() {
         return [
-            'captcha_provider' => $this->getSetting('captcha_provider', 'off'), // off, turnstile
+            'captcha_provider' => $this->getSetting('captcha_provider', 'off'), // off, turnstile, recaptcha
             'turnstile_site_key' => $this->getSetting('turnstile_site_key', ''),
             'turnstile_secret_key' => $this->getSetting('turnstile_secret_key', ''),
             'recaptcha_site_key' => $this->getSetting('recaptcha_site_key', ''),
@@ -74,6 +74,13 @@ class Settings extends Model {
     }
     
     public function updateSecuritySettings($data) {
+        foreach ($data as $key => $value) {
+            $this->setSetting($key, $value);
+        }
+        return true;
+    }
+    
+    public function updateFormatSettings($data) {
         foreach ($data as $key => $value) {
             $this->setSetting($key, $value);
         }

@@ -225,4 +225,34 @@ class WorkOrderController extends Controller {
             'companyInfo' => $companyInfo
         ]);
     }
+    
+    public function delete($id) {
+        $this->requireAdmin();
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect('/work-orders/view/' . $id);
+        }
+        
+        try {
+            $this->validateCSRF();
+            
+            $workOrder = $this->workOrderModel->getWorkOrderById($id);
+            if (!$workOrder) {
+                $this->redirect('/404');
+            }
+            
+            // Delete the work order
+            $this->workOrderModel->deleteWorkOrder($id);
+            
+            // Log the deletion
+            $this->logger->log('work_order_deleted', "Work Order #{$id} deleted", $_SESSION['user_id']);
+            
+            // Redirect to work orders list with success message
+            $this->redirect('/work-orders?message=' . urlencode('Work order deleted successfully.'));
+            
+        } catch (Exception $e) {
+            error_log("Error deleting work order: " . $e->getMessage());
+            $this->redirect('/work-orders/view/' . $id . '?error=' . urlencode('Failed to delete work order.'));
+        }
+    }
 }

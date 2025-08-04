@@ -187,6 +187,7 @@ ob_start();
                             </div>
                         </div>
 
+                        <?php if ($_SESSION['user_group'] !== 'Limited'): ?>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label for="username" class="block text-sm font-medium text-gray-700">
@@ -210,6 +211,7 @@ ob_start();
                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500">
                             </div>
                         </div>
+                        <?php endif; ?>
                     </div>
 
                     <div class="flex justify-between mt-6">

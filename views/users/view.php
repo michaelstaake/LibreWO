@@ -10,6 +10,7 @@ ob_start();
                 <h1 class="text-2xl font-bold text-gray-900"><?= htmlspecialchars($user['username']) ?></h1>
                 <p class="mt-1 text-sm text-gray-600"><?= htmlspecialchars($user['email']) ?></p>
             </div>
+            <?php if ($_SESSION['user_group'] === 'Admin'): ?>
             <div>
                 <a href="<?= BASE_URL ?>/users" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                     <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -18,6 +19,7 @@ ob_start();
                     Back to Users
                 </a>
             </div>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -228,7 +230,9 @@ ob_start();
                         <?php foreach ($workOrders as $workOrder): ?>
                         <tr class="<?= $workOrder['priority'] === 'Priority' ? 'bg-red-50 hover:bg-red-100' : 'hover:bg-gray-50' ?>">
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                #<?= $workOrder['id'] ?>
+                                <a href="<?= BASE_URL ?>/work-orders/view/<?= $workOrder['id'] ?>" class="text-primary-600 hover:text-primary-500">
+                                    #<?= $workOrder['id'] ?>
+                                </a>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 <?= htmlspecialchars($workOrder['customer_name']) ?>

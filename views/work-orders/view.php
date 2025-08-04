@@ -43,6 +43,14 @@ ob_start();
                     </svg>
                     Print
                 </a>
+                <?php if ($_SESSION['user_group'] === 'Admin'): ?>
+                <button type="button" onclick="openDeleteModal()" class="inline-flex items-center px-4 py-2 border border-red-300 shadow-sm text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50">
+                    <svg class="-ml-1 mr-2 h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Delete
+                </button>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -106,7 +114,7 @@ ob_start();
                             <dd class="mt-1 text-sm text-gray-900"><?= htmlspecialchars($workOrder['technician_display_name']) ?></dd>
                         </div>
                         <?php endif; ?>
-                        <?php if ($workOrder['username'] || $workOrder['password']): ?>
+                        <?php if (($_SESSION['user_group'] !== 'Limited') && ($workOrder['username'] || $workOrder['password'])): ?>
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Login Information</dt>
                             <dd class="mt-1">
@@ -305,7 +313,7 @@ ob_start();
                 </button>
             </div>
             <div class="space-y-4">
-                <?php if ($workOrder['username']): ?>
+                <?php if ($_SESSION['user_group'] !== 'Limited' && $workOrder['username']): ?>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Username</label>
                     <div class="mt-1 flex items-center space-x-2">
@@ -318,7 +326,7 @@ ob_start();
                     </div>
                 </div>
                 <?php endif; ?>
-                <?php if ($workOrder['password']): ?>
+                <?php if ($_SESSION['user_group'] !== 'Limited' && $workOrder['password']): ?>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Password</label>
                     <div class="mt-1 flex items-center space-x-2">
@@ -337,9 +345,13 @@ ob_start();
                     </div>
                 </div>
                 <?php endif; ?>
-                <?php if (!$workOrder['username'] && !$workOrder['password']): ?>
+                <?php if (($_SESSION['user_group'] === 'Limited') || (!$workOrder['username'] && !$workOrder['password'])): ?>
                 <div class="text-center text-gray-500 py-4">
-                    No login information available for this work order.
+                    <?php if ($_SESSION['user_group'] === 'Limited'): ?>
+                        You do not have permission to view login information.
+                    <?php else: ?>
+                        No login information available for this work order.
+                    <?php endif; ?>
                 </div>
                 <?php endif; ?>
             </div>
@@ -351,6 +363,50 @@ ob_start();
         </div>
     </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<?php if ($_SESSION['user_group'] === 'Admin'): ?>
+<div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+        
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        
+        <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+            <div class="sm:flex sm:items-start">
+                <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                    <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                </div>
+                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                        Delete Work Order
+                    </h3>
+                    <div class="mt-2">
+                        <p class="text-sm text-gray-500">
+                            Are you sure you want to delete Work Order #<?= $workOrder['id'] ?>? This action cannot be undone and will permanently remove all associated data including notes, logs, and attachments.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                <form method="POST" action="<?= BASE_URL ?>/work-orders/delete/<?= $workOrder['id'] ?>" class="inline">
+                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
+                    <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Delete Work Order
+                    </button>
+                </form>
+                <button type="button" onclick="closeDeleteModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 
 <script>
 function openLoginModal() {
@@ -405,10 +461,31 @@ document.getElementById('loginModal').addEventListener('click', function(e) {
     }
 });
 
-// Close modal with Escape key
+// Delete modal functions
+function openDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('hidden');
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.add('hidden');
+}
+
+// Close delete modal when clicking outside
+document.getElementById('deleteModal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDeleteModal();
+    }
+});
+
+// Close modals with Escape key
 document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && !document.getElementById('loginModal').classList.contains('hidden')) {
-        closeLoginModal();
+    if (e.key === 'Escape') {
+        if (!document.getElementById('loginModal').classList.contains('hidden')) {
+            closeLoginModal();
+        }
+        if (document.getElementById('deleteModal') && !document.getElementById('deleteModal').classList.contains('hidden')) {
+            closeDeleteModal();
+        }
     }
 });
 </script>

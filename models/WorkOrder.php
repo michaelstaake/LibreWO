@@ -224,4 +224,30 @@ class WorkOrder extends Model {
         $stmt->execute([$workOrderId]);
         return $stmt->fetchAll();
     }
+    
+    public function getWorkOrdersByCustomerId($customerId) {
+        $stmt = $this->db->prepare("SELECT * FROM work_orders WHERE customer_id = ?");
+        $stmt->execute([$customerId]);
+        return $stmt->fetchAll();
+    }
+    
+    public function deleteWorkOrder($id) {
+        try {
+            $this->db->beginTransaction();
+            
+            // Delete related logs first
+            $stmt = $this->db->prepare("DELETE FROM work_order_logs WHERE work_order_id = ?");
+            $stmt->execute([$id]);
+            
+            // Delete the work order
+            $stmt = $this->db->prepare("DELETE FROM work_orders WHERE id = ?");
+            $result = $stmt->execute([$id]);
+            
+            $this->db->commit();
+            return $result;
+        } catch (Exception $e) {
+            $this->db->rollback();
+            throw $e;
+        }
+    }
 }

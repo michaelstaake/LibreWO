@@ -7,8 +7,13 @@ class InstallController extends Controller {
     
     public function __construct() {
         parent::__construct();
-        $this->userModel = new User();
-    }
+        $this->userModel =             'url_rewrite' => [
+                'required' => 'URL Rewriting Support (recommended)',
+                'current' => $this->hasUrlRewriting() ? 'Available' : 'Not Available',
+                'status' => $this->hasUrlRewriting(),
+                'name' => 'URL Rewriting'
+            ]
+        ];    }
     
     public function index() {
         // Check if database is already installed
@@ -212,7 +217,7 @@ class InstallController extends Controller {
             'company_email' => '',
             'company_logo' => '',
             'work_order_disclaimer' => 'I authorize the above repair work to be done along with the necessary material, and hereby grant you and/or your employees permission to operate this vehicle/equipment for testing purposes. I promise to pay for all work performed at the above prices. We reserve the right to charge a storage fee for equipment left over 30 days from the time of notification that the work is complete.',
-            'captcha_type' => 'none',
+            'captcha_provider' => 'off',
             'turnstile_site_key' => '',
             'turnstile_secret_key' => '',
             'recaptcha_site_key' => '',

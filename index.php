@@ -34,7 +34,6 @@ $router->addRoute('/login', 'AuthController', 'login');
 $router->addRoute('/logout', 'AuthController', 'logout');
 $router->addRoute('/forgot-password', 'AuthController', 'forgotPassword');
 $router->addRoute('/reset-password', 'AuthController', 'resetPassword');
-$router->addRoute('/verify-2fa', 'AuthController', 'verify2FA');
 
 // Work Order routes
 $router->addRoute('/work-orders', 'WorkOrderController', 'index');
@@ -42,11 +41,13 @@ $router->addRoute('/work-orders/create', 'WorkOrderController', 'create');
 $router->addRoute('/work-orders/view/{id}', 'WorkOrderController', 'details');
 $router->addRoute('/work-orders/print/{id}', 'WorkOrderController', 'print');
 $router->addRoute('/work-orders/submitted/{id}', 'WorkOrderController', 'submitted');
+$router->addRoute('/work-orders/delete/{id}', 'WorkOrderController', 'delete');
 
 // Customer routes
 $router->addRoute('/customers', 'CustomerController', 'index');
 $router->addRoute('/customers/view/{id}', 'CustomerController', 'details');
 $router->addRoute('/customers/merge', 'CustomerController', 'merge');
+$router->addRoute('/customers/delete/{id}', 'CustomerController', 'delete');
 
 // User routes (Admin only)
 $router->addRoute('/users', 'UserController', 'index');
@@ -54,6 +55,9 @@ $router->addRoute('/users/view/{id}', 'UserController', 'details');
 
 // Settings routes (Admin only)
 $router->addRoute('/settings', 'SettingsController', 'index');
+
+// Logs routes (Admin only)
+$router->addRoute('/logs', 'LogsController', 'index');
 
 // Install route
 $router->addRoute('/install', 'InstallController', 'index');

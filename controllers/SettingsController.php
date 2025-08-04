@@ -40,12 +40,23 @@ class SettingsController extends Controller {
                         'max_login_attempts' => intval($_POST['max_login_attempts']),
                         'captcha_provider' => $_POST['captcha_provider'],
                         'turnstile_site_key' => $this->sanitizeInput($_POST['turnstile_site_key']),
-                        'turnstile_secret_key' => $this->sanitizeInput($_POST['turnstile_secret_key'])
+                        'turnstile_secret_key' => $this->sanitizeInput($_POST['turnstile_secret_key']),
+                        'recaptcha_site_key' => $this->sanitizeInput($_POST['recaptcha_site_key']),
+                        'recaptcha_secret_key' => $this->sanitizeInput($_POST['recaptcha_secret_key'])
                     ];
                     
                     $this->settingsModel->updateSecuritySettings($securityData);
                     $this->logger->log('settings_updated', 'Security settings updated', $_SESSION['user_id']);
                     $message = 'Security settings updated successfully.';
+                    
+                } elseif (isset($_POST['section']) && $_POST['section'] === 'format') {
+                    $formatData = [
+                        'phone_number_format' => $_POST['phone_number_format']
+                    ];
+                    
+                    $this->settingsModel->updateFormatSettings($formatData);
+                    $this->logger->log('settings_updated', 'Format settings updated', $_SESSION['user_id']);
+                    $message = 'Format settings updated successfully.';
                     
                 }
                 

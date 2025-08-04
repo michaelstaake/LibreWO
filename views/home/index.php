@@ -10,7 +10,8 @@ ob_start();
     </div>
 
     <!-- Stats Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-<?= $_SESSION['user_group'] === 'Limited' ? '3' : '4' ?> gap-6 mb-8">
+        <?php if ($_SESSION['user_group'] !== 'Limited'): ?>
         <!-- Create Work Order -->
         <a href="<?= BASE_URL ?>/work-orders/create" class="bg-primary-600 hover:bg-primary-700 text-white p-6 rounded-lg shadow transition-colors">
             <div class="flex items-center">
@@ -25,6 +26,7 @@ ob_start();
                 </div>
             </div>
         </a>
+        <?php endif; ?>
 
         <!-- Total Work Orders -->
         <a href="<?= BASE_URL ?>/work-orders" class="bg-white hover:bg-gray-50 p-6 rounded-lg shadow transition-colors block">

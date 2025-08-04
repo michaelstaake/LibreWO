@@ -55,7 +55,7 @@ define('DB_PASS', 'your_password');
 ```
 
 ### Email Configuration
-Configure SMTP settings for email notifications:
+Configure SMTP settings for 2FA and password reset emails:
 ```php
 define('SMTP_HOST', 'smtp.example.com');
 define('SMTP_PORT', 587);
@@ -136,13 +136,12 @@ LibreWO maintains comprehensive logs:
 ### Regular Cleanup
 The system automatically cleans up:
 - Login records older than 30 days
+- Other logs older than 60 days
 - Expired 2FA codes
 - Old login attempt records
 
 ### Backup Recommendations
-- Regular database backups
-- Backup log files
-- Backup uploaded company logos
+- Always remember to back up the database regularly!
 
 ## Support
 

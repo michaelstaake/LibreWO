@@ -97,6 +97,14 @@ class Customer extends Model {
         return $stmt->fetch()['count'] == 0;
     }
     
+    public function getCustomerById($id) {
+        return $this->findById($id);
+    }
+    
+    public function deleteCustomer($id) {
+        return parent::delete($id);
+    }
+    
     public function mergeCustomers($keepId, $mergeId) {
         try {
             $this->db->beginTransaction();

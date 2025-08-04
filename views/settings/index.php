@@ -44,7 +44,7 @@ ob_start();
         <div class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">
                 <h2 class="text-lg font-medium text-gray-900">Company Information</h2>
-                <p class="mt-1 text-sm text-gray-600">This information appears on work orders and invoices</p>
+                <p class="mt-1 text-sm text-gray-600">This information appears across the site, emails, and print outs.</p>
             </div>
             <form method="POST" action="<?= BASE_URL ?>/settings" class="px-6 py-4">
                 <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
@@ -64,7 +64,7 @@ ob_start();
 
                     <div>
                         <label for="company_phone" class="block text-sm font-medium text-gray-700">Phone</label>
-                        <input type="tel" id="company_phone" name="company_phone" value="<?= htmlspecialchars($settings['company_phone'] ?? '') ?>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                        <input type="tel" id="company_phone" name="company_phone" value="<?= htmlspecialchars($settings['company_phone'] ?? '') ?>" data-no-auto-format class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
                     </div>
 
                     <div>
@@ -97,51 +97,6 @@ ob_start();
             </form>
         </div>
 
-        <!-- Email Settings -->
-        <div class="bg-white shadow rounded-lg">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-lg font-medium text-gray-900">Email Settings</h2>
-                <p class="mt-1 text-sm text-gray-600">Configure SMTP settings for sending emails</p>
-            </div>
-            <div class="px-6 py-4">
-                <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
-                    <div class="flex">
-                        <div class="flex-shrink-0">
-                            <svg class="h-5 w-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                        <div class="ml-3">
-                            <p class="text-sm text-blue-600">
-                                Email settings are configured in the config.php file. Please contact your system administrator to modify SMTP settings.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mt-4">
-                    <dl class="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">SMTP Host</dt>
-                            <dd class="mt-1 text-sm text-gray-900"><?= defined('SMTP_HOST') ? SMTP_HOST : 'Not configured' ?></dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">SMTP Port</dt>
-                            <dd class="mt-1 text-sm text-gray-900"><?= defined('SMTP_PORT') ? SMTP_PORT : 'Not configured' ?></dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">From Email</dt>
-                            <dd class="mt-1 text-sm text-gray-900"><?= defined('FROM_EMAIL') ? FROM_EMAIL : 'Not configured' ?></dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">From Name</dt>
-                            <dd class="mt-1 text-sm text-gray-900"><?= defined('FROM_NAME') ? FROM_NAME : 'Not configured' ?></dd>
-                        </div>
-                    </dl>
-                </div>
-            </div>
-        </div>
-
         <!-- Security Settings -->
         <div class="bg-white shadow rounded-lg">
             <div class="px-6 py-4 border-b border-gray-200">
@@ -157,10 +112,10 @@ ob_start();
                         <div class="flex items-center">
                             <input id="require_2fa" name="require_2fa" type="checkbox" <?= ($settings['require_2fa'] ?? false) ? 'checked' : '' ?> class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
                             <label for="require_2fa" class="ml-2 block text-sm text-gray-900">
-                                Require Two-Factor Authentication for all users
+                                Force Two-Factor Authentication
                             </label>
                         </div>
-                        <p class="mt-1 text-sm text-gray-500">When enabled, all users must set up 2FA to access their accounts</p>
+                        <p class="mt-1 text-sm text-gray-500">Enabled: 2FA required for every login. Disabled: 2FA only required from logins from new IP.</p>
                     </div>
 
                     <div>
@@ -180,6 +135,7 @@ ob_start();
                         <select id="captcha_provider" name="captcha_provider" class="mt-1 block w-48 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm" onchange="toggleCaptchaFields()">
                             <option value="off" <?= ($settings['captcha_provider'] ?? 'off') === 'off' ? 'selected' : '' ?>>Disabled</option>
                             <option value="turnstile" <?= ($settings['captcha_provider'] ?? 'off') === 'turnstile' ? 'selected' : '' ?>>Cloudflare Turnstile</option>
+                            <option value="recaptcha" <?= ($settings['captcha_provider'] ?? 'off') === 'recaptcha' ? 'selected' : '' ?>>Google reCAPTCHA v2</option>
                         </select>
                         <p class="mt-1 text-sm text-gray-500">Enable CAPTCHA protection for login and password reset forms</p>
                     </div>
@@ -207,11 +163,72 @@ ob_start();
                             </p>
                         </div>
                     </div>
+
+                    <div id="recaptcha-fields" style="<?= ($settings['captcha_provider'] ?? 'off') === 'recaptcha' ? '' : 'display: none;' ?>">
+                        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                            <div>
+                                <label for="recaptcha_site_key" class="block text-sm font-medium text-gray-700">reCAPTCHA Site Key</label>
+                                <input type="text" id="recaptcha_site_key" name="recaptcha_site_key" value="<?= htmlspecialchars($settings['recaptcha_site_key'] ?? '') ?>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm" placeholder="6LdRcP0oAAAAAH...">
+                                <p class="mt-1 text-sm text-gray-500">Your Google reCAPTCHA site key (public)</p>
+                            </div>
+                            <div>
+                                <label for="recaptcha_secret_key" class="block text-sm font-medium text-gray-700">reCAPTCHA Secret Key</label>
+                                <input type="password" id="recaptcha_secret_key" name="recaptcha_secret_key" value="<?= htmlspecialchars($settings['recaptcha_secret_key'] ?? '') ?>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm" placeholder="6LdRcP0oAAAAAG...">
+                                <p class="mt-1 text-sm text-gray-500">Your Google reCAPTCHA secret key (private)</p>
+                            </div>
+                        </div>
+                        <div class="mt-2 p-3 bg-green-50 border border-green-200 rounded-md">
+                            <p class="text-sm text-green-800">
+                                <strong>Setup Instructions:</strong><br>
+                                1. Go to <a href="https://www.google.com/recaptcha/admin" target="_blank" class="text-green-600 hover:text-green-500 underline">Google reCAPTCHA Admin Console</a><br>
+                                2. Register a new site with reCAPTCHA v2 "I'm not a robot" Checkbox<br>
+                                3. Add your domain to the allowed domains list<br>
+                                4. Copy the Site Key and Secret Key to the fields above
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="mt-6 flex justify-end">
                     <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
                         Save Security Settings
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Data Format Settings -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-medium text-gray-900">Data Format Settings</h2>
+                <p class="mt-1 text-sm text-gray-600">Configure how data is formatted and validated throughout the system</p>
+            </div>
+            <form method="POST" action="<?= BASE_URL ?>/settings" class="px-6 py-4">
+                <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
+                <input type="hidden" name="section" value="format">
+                
+                <div class="space-y-6">
+                    <div>
+                        <label for="phone_number_format" class="block text-sm font-medium text-gray-700">Phone Number Format</label>
+                        <select id="phone_number_format" name="phone_number_format" class="mt-1 block w-64 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm" onchange="showPhoneFormatExample()">
+                            <option value="default" <?= ($settings['phone_number_format'] ?? 'default') === 'default' ? 'selected' : '' ?>>Default (minimum 7 digits)</option>
+                            <option value="usa_format_a" <?= ($settings['phone_number_format'] ?? 'default') === 'usa_format_a' ? 'selected' : '' ?>>USA Format A: (555) 555-5555</option>
+                            <option value="usa_format_b" <?= ($settings['phone_number_format'] ?? 'default') === 'usa_format_b' ? 'selected' : '' ?>>USA Format B: 555-555-5555</option>
+                        </select>
+                        <p class="mt-1 text-sm text-gray-500">Controls how phone numbers are formatted and validated across the system</p>
+                        
+                        <div id="phone_format_example" class="mt-3 p-3 bg-gray-50 border border-gray-200 rounded-md">
+                            <p class="text-sm text-gray-700">
+                                <strong>Example:</strong> <span id="example_text"></span><br>
+                                <strong>Pattern:</strong> <span id="pattern_text"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        Save Format Settings
                     </button>
                 </div>
             </form>
@@ -241,14 +258,6 @@ ob_start();
                         <dt class="text-sm font-medium text-gray-500">PHP Version</dt>
                         <dd class="mt-1 text-sm text-gray-900"><?= PHP_VERSION ?></dd>
                     </div>
-                    <div>
-                        <dt class="text-sm font-medium text-gray-500">Database Type</dt>
-                        <dd class="mt-1 text-sm text-gray-900">MySQL</dd>
-                    </div>
-                    <div>
-                        <dt class="text-sm font-medium text-gray-500">Installation Date</dt>
-                        <dd class="mt-1 text-sm text-gray-900"><?= $settings['installation_date'] ?? 'Unknown' ?></dd>
-                    </div>
                 </dl>
             </div>
         </div>
@@ -259,13 +268,45 @@ ob_start();
 function toggleCaptchaFields() {
     const provider = document.getElementById('captcha_provider').value;
     const turnstileFields = document.getElementById('turnstile-fields');
+    const recaptchaFields = document.getElementById('recaptcha-fields');
     
     if (provider === 'turnstile') {
         turnstileFields.style.display = 'block';
+        recaptchaFields.style.display = 'none';
+    } else if (provider === 'recaptcha') {
+        turnstileFields.style.display = 'none';
+        recaptchaFields.style.display = 'block';
     } else {
         turnstileFields.style.display = 'none';
+        recaptchaFields.style.display = 'none';
     }
 }
+
+function showPhoneFormatExample() {
+    const format = document.getElementById('phone_number_format').value;
+    const exampleText = document.getElementById('example_text');
+    const patternText = document.getElementById('pattern_text');
+    
+    switch(format) {
+        case 'default':
+            exampleText.textContent = '1234567890 or 555-1234 or any format with 7+ digits';
+            patternText.textContent = 'Minimum 7 digits, any format allowed';
+            break;
+        case 'usa_format_a':
+            exampleText.textContent = '(555) 555-5555';
+            patternText.textContent = '(XXX) XXX-XXXX format required';
+            break;
+        case 'usa_format_b':
+            exampleText.textContent = '555-555-5555';
+            patternText.textContent = 'XXX-XXX-XXXX format required';
+            break;
+    }
+}
+
+// Initialize phone format example on page load
+document.addEventListener('DOMContentLoaded', function() {
+    showPhoneFormatExample();
+});
 </script>
 
 <?php 

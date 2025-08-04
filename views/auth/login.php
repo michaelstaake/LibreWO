@@ -84,10 +84,16 @@ ob_start();
                     </div>
                 </div>
 
-                <?php if (isset($captchaSettings) && $captchaSettings['captcha_provider'] === 'turnstile' && !empty($captchaSettings['turnstile_site_key'])): ?>
-                <div class="flex justify-center">
-                    <div class="cf-turnstile" data-sitekey="<?= htmlspecialchars($captchaSettings['turnstile_site_key']) ?>"></div>
-                </div>
+                <?php if (isset($captchaSettings)): ?>
+                    <?php if ($captchaSettings['captcha_provider'] === 'turnstile' && !empty($captchaSettings['turnstile_site_key'])): ?>
+                    <div class="flex justify-center">
+                        <div class="cf-turnstile" data-sitekey="<?= htmlspecialchars($captchaSettings['turnstile_site_key']) ?>"></div>
+                    </div>
+                    <?php elseif ($captchaSettings['captcha_provider'] === 'recaptcha' && !empty($captchaSettings['recaptcha_site_key'])): ?>
+                    <div class="flex justify-center">
+                        <div class="g-recaptcha" data-sitekey="<?= htmlspecialchars($captchaSettings['recaptcha_site_key']) ?>"></div>
+                    </div>
+                    <?php endif; ?>
                 <?php endif; ?>
 
                 <div>
@@ -100,8 +106,12 @@ ob_start();
     </div>
 </div>
 
-<?php if (isset($captchaSettings) && $captchaSettings['captcha_provider'] === 'turnstile' && !empty($captchaSettings['turnstile_site_key'])): ?>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<?php if (isset($captchaSettings)): ?>
+    <?php if ($captchaSettings['captcha_provider'] === 'turnstile' && !empty($captchaSettings['turnstile_site_key'])): ?>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <?php elseif ($captchaSettings['captcha_provider'] === 'recaptcha' && !empty($captchaSettings['recaptcha_site_key'])): ?>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <?php endif; ?>
 <?php endif; ?>
 
 <?php 

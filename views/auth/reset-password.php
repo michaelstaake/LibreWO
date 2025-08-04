@@ -65,8 +65,8 @@ ob_start();
                 </div>
             </form>
         <?php else: ?>
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                <p>This password reset link is invalid or has expired.</p>
+            <div class="px-4 py-3 rounded">
+                <p>There was a problem performing this request. If you'd like to try again, you may. Otherwise, please contact your system administrator.</p>
                 <div class="mt-4">
                     <a href="<?= BASE_URL ?>/forgot-password" class="text-primary-600 hover:text-primary-500">
                         Request a new reset link

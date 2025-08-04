@@ -49,7 +49,8 @@ class Controller {
     
     protected function view($viewName, $data = []) {
         // Add company name and logo URL to all views
-        $data['companyName'] = $this->settingsModel->getSetting('company_name', 'LibreWO');
+        $companyName = $this->settingsModel->getSetting('company_name', 'LibreWO');
+        $data['companyName'] = !empty($companyName) ? $companyName : 'LibreWO';
         $data['companyLogoUrl'] = $this->settingsModel->getSetting('company_logo_url', '');
         
         extract($data);

@@ -32,6 +32,27 @@ class User extends Model {
         return $this->findOneWhere('email = ?', [$email]);
     }
     
+    public function findByResetToken($token) {
+        // First, find the user with the token regardless of expiration
+        $user = $this->findOneWhere('reset_token = ?', [$token]);
+        
+        if (!$user) {
+            return null; // No user found with this token
+        }
+        
+        // Check if the token has expired
+        $now = date('Y-m-d H:i:s');
+        if ($user['reset_expires'] && $user['reset_expires'] > $now) {
+            return $user; // Token is valid and not expired
+        }
+        
+        return null; // Token has expired
+    }
+    
+    public function findByResetTokenDebug($token) {
+        return $this->findOneWhere('reset_token = ?', [$token]);
+    }
+    
     public function createUser($data) {
         $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         $data['created_at'] = date('Y-m-d H:i:s');
