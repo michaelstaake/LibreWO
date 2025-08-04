@@ -157,7 +157,7 @@ class WorkOrder extends Model {
     }
     
     public function getPriorityCount() {
-        $stmt = $this->db->query("SELECT COUNT(*) as count FROM work_orders WHERE priority = 'Priority'");
+        $stmt = $this->db->query("SELECT COUNT(*) as count FROM work_orders WHERE priority = 'Priority' AND status NOT IN ('Closed', 'Picked Up')");
         return $stmt->fetch()['count'];
     }
     
