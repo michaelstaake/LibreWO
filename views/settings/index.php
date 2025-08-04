@@ -156,7 +156,7 @@ ob_start();
                         <div class="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
                             <p class="text-sm text-blue-800">
                                 <strong>Setup Instructions:</strong><br>
-                                1. Go to <a href="https://dash.cloudflare.com/profile/api-tokens" target="_blank" class="text-blue-600 hover:text-blue-500 underline">Cloudflare Dashboard</a><br>
+                                1. Go to <a href="https://dash.cloudflare.com/" target="_blank" class="text-blue-600 hover:text-blue-500 underline">Cloudflare Dashboard</a><br>
                                 2. Navigate to Turnstile and create a new site<br>
                                 3. Copy the Site Key and Secret Key to the fields above<br>
                                 4. Add your domain to the allowed domains list
