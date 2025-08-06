@@ -367,12 +367,68 @@
                     <div class="text-gray-600">
                         <span><?= htmlspecialchars(!empty($_SESSION['user_name']) ? $_SESSION['user_name'] : $_SESSION['username']) ?></span>
                     </div>
-                    <div class="text-gray-600">
+                    <div class="text-gray-600 flex items-center">
                         <p>Powered by <a href="https://librewo.com" target="_blank" class="text-primary-600 hover:text-primary-700">LibreWO</a></p>
+                        <?php
+                        // Show update notification if available
+                        if (isset($_SESSION['update_info']) && is_array($_SESSION['update_info'])):
+                            $updateInfo = $_SESSION['update_info'];
+                            if ($updateInfo['status'] === 'success' && isset($updateInfo['update_available']) && $updateInfo['update_available']):
+                        ?>
+                            <button onclick="showUpdateModal()" class="ml-2 text-red-600 hover:text-red-700" title="Update available - Click to view details">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        <?php elseif ($updateInfo['status'] === 'success' && isset($updateInfo['update_available']) && !$updateInfo['update_available']): ?>
+                            <span class="ml-2 text-green-600" title="You are running the latest version (<?= htmlspecialchars($updateInfo['current_version'] ?? 'Unknown') ?>)">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                </svg>
+                            </span>
+                        <?php elseif ($updateInfo['status'] === 'error'): ?>
+                            <span class="ml-2 text-yellow-600" title="<?= htmlspecialchars($updateInfo['message'] ?? 'Unable to check for updates') ?>">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                </svg>
+                            </span>
+                        <?php endif; ?>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
         </footer>
+
+        <!-- Update Modal -->
+        <?php if (isset($_SESSION['update_info']) && is_array($_SESSION['update_info']) && $_SESSION['update_info']['status'] === 'success' && isset($_SESSION['update_info']['update_available']) && $_SESSION['update_info']['update_available']): ?>
+        <div id="updateModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+            <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                <div class="mt-3 text-center">
+                    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                        <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.96-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 mt-2">Update Available</h3>
+                    <div class="mt-2 px-7 py-3">
+                        <p class="text-sm text-gray-500">
+                            A new version of LibreWO is available!<br>
+                            Current version: <?= htmlspecialchars($_SESSION['update_info']['current_version'] ?? 'Unknown') ?><br>
+                            Latest version: <?= htmlspecialchars($_SESSION['update_info']['latest_version'] ?? 'Unknown') ?>
+                        </p>
+                    </div>
+                    <div class="items-center px-4 py-3">
+                        <a href="https://librewo.com" target="_blank" class="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 inline-block text-center mb-2">
+                            Download Update
+                        </a>
+                        <button onclick="hideUpdateModal()" class="px-4 py-2 bg-gray-300 text-gray-800 text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
     <?php endif; ?>
 
     <script>
@@ -434,6 +490,36 @@
         // CSRF token for AJAX requests
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
                           document.querySelector('input[name="csrf_token"]')?.value;
+
+        // Update modal functions
+        function showUpdateModal() {
+            const modal = document.getElementById('updateModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function hideUpdateModal() {
+            const modal = document.getElementById('updateModal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('updateModal');
+            if (modal && event.target === modal) {
+                hideUpdateModal();
+            }
+        });
+
+        // Close modal with escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                hideUpdateModal();
+            }
+        });
     </script>
 </body>
 </html>

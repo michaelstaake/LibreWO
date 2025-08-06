@@ -27,6 +27,9 @@ define('LOGIN_ATTEMPT_TIMEOUT', 900); // 15 minutes
 // Application Configuration
 define('PAGINATION_LIMIT', 10);
 
+// Update Check Configuration
+define('UPDATE_CHECK_ENABLED', true); // Enable or disable update checks
+
 // File paths
 define('ROOT_PATH', dirname(__FILE__));
 define('VENDOR_PATH', ROOT_PATH . '/vendors');

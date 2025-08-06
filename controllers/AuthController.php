@@ -134,6 +134,9 @@ class AuthController extends Controller {
         $_SESSION['user_name'] = $user['name'];
         $_SESSION['user_group'] = $user['user_group'];
         
+        // Check for updates
+        $this->checkForUpdates();
+        
         // Record login
         $this->userModel->recordLogin($userId, $ip);
         $this->userModel->recordLoginAttempt($ip, $user['username'], true);
@@ -384,5 +387,26 @@ class AuthController extends Controller {
         
         $resultJson = json_decode($result, true);
         return isset($resultJson['success']) && $resultJson['success'] === true;
+    }
+    
+    private function checkForUpdates() {
+        try {
+            // Ensure ROOT_PATH is defined for UpdateChecker
+            if (!defined('ROOT_PATH')) {
+                return;
+            }
+            
+            require_once ROOT_PATH . '/core/UpdateChecker.php';
+            $updateChecker = new UpdateChecker();
+            
+            $updateInfo = $updateChecker->checkForUpdates();
+            
+            if ($updateInfo !== null) {
+                $_SESSION['update_info'] = $updateInfo;
+            }
+        } catch (Exception $e) {
+            // Silently fail - don't interrupt login process
+            error_log('Update check failed: ' . $e->getMessage());
+        }
     }
 }
