@@ -25,10 +25,6 @@ LibreWO is a comprehensive work order management system designed for computer re
 ## Installation
 
 1. **Download LibreWO**
-   ```bash
-   git clone https://github.com/yourcompany/librewo.git
-   cd librewo
-   ```
 
 2. **Configure Database**
    - Create a MySQL database and user with adequate permissions
